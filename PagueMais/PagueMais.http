@@ -1,0 +1,6 @@
+@PagueMais_HostAddress = http://localhost:5151
+
+GET {{PagueMais_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

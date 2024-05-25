@@ -1,0 +1,78 @@
+# Arquivos temporários gerados durante a compilação
+obj/
+bin/
+
+# Arquivos de saída gerados pela compilação
+*.dll
+*.exe
+
+# Arquivos de pacotes NuGet
+*.nupkg
+
+# Diretórios de saída de versões anteriores de Visual Studio
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Arquivos gerados pelo Visual Studio
+*.user
+*.aps
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.pdb
+*.ilk
+*.meta
+
+# Arquivos do ReSharper
+_ReSharper*/
+
+# Arquivos de banco de dados
+*.mdf
+*.ldf
+
+# Arquivos de log e rastreamento
+*.log
+*.logs
+
+# Diretório VS Code
+.vscode/
+
+# Diretório de node_modules
+node_modules/
+
+# Arquivos de compilação e pacotes
+*.dll
+*.exe
+*.pdb
+*.class
+*.war
+*.ear
+*.jar
+*.nupkg
+*.zip
+
+# Diretório do Visual Studio
+
+# Arquivos de configuração de usuários
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs

@@ -1,0 +1,17 @@
+@PagueMais_HostAddress = http://localhost:5151
+
+GET {{PagueMais_HostAddress}}/api/v1/clients
+Accept: application/json
+
+###
+
+POST {{PagueMais_HostAddress}}/api/v1/clients
+Content-Type: application/json
+
+{
+  "Name": "Teste",
+  "Email": "email@email.com",
+  "Cpf": "143.133.125-12",
+  "Phone": "8499",
+  "BirthDate": "2024-05-25T15:30:00Z"
+}

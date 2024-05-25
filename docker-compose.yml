@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    ports:
+      - 5432:5432
+
+    networks:
+      - database_network
+
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: user
+      POSTGRES_DB: database
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+
+    networks:
+      - database_network
+
+networks:
+  database_network:
+    driver: bridge
