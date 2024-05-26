@@ -15,6 +15,17 @@ builder.Services.AddDbContext<Database>();
 builder.Services.AddScoped<ClientRepository>();
 builder.Services.AddScoped<ClientService>();
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder =>
+            {
+                builder.WithOrigins("*")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,8 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
