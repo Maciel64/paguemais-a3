@@ -8,6 +8,7 @@ namespace Controllers
 {
   [ApiController]
   [Route("/api/v1/clients")]
+  // Marca a classe como um controlador de API e define a rota base para as ações deste controlador
   public class ClientController(ClientService clientService) : ControllerBase
   {
     private readonly ClientService _clientService = clientService;
