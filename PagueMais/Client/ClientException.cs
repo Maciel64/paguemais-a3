@@ -10,4 +10,14 @@ namespace Exceptions
     {
     }
   }
+  public class ClientInvalidCpfException : Exception
+  {
+    public ClientInvalidCpfException() : base("Invalid CPF.")
+    {
+    }
+
+    public ClientInvalidCpfException(string message) : base(message)
+    {
+    }
+  }
 }

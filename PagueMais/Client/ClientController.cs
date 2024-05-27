@@ -32,6 +32,10 @@ namespace Controllers
       {
         return UnprocessableEntity(e.Message);
       }
+      catch (ClientInvalidCpfException e)
+      {
+        return BadRequest(e.Message);
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Entities;
 using Exceptions;
 using Repositories;
@@ -15,12 +16,14 @@ namespace Services
 
     public async Task<Client> CreateAsync(Client client)
     {
-      var registedClient = await _produtoRepository.FindByCpf(client.Cpf);
+      var registeredClient = await _produtoRepository.FindByCpf(client.Cpf);
 
-      if (registedClient is not null)
+      if (registeredClient is not null)
       {
         throw new ClientCpfAlreadyRegisteredException();
       }
+
+
 
       return await _produtoRepository.CreateAsync(client);
     }
