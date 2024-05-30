@@ -8,7 +8,7 @@ namespace Entities
     public string Email { get; set; } = Email;
     public int Phone { get; set; } = Phone;
     public DateTime BirthDate { get; set; } = BirthDate;
-    public DateTime CreatedAt { get; set; } = new();
-    public Nullable<DateTime> UpdatedAt { get; set; } = null;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; } = null;
   }
 }

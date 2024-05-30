@@ -11,7 +11,7 @@ Content-Type: application/json
 {
   "Name": "Teste",
   "Email": "email@email.com",
-  "Cpf": "143.133.125-12",
+  "Cpf": "2",
   "Phone": "8499",
   "BirthDate": "2024-05-25T15:30:00Z"
 }

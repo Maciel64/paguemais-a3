@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/ui/header";
 import QueryContext from "@/contexts/query-context";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,8 @@ export default function RootLayout({
         <body className={inter.className}>
           <Header />
 
-          <main className="px-96 py-12">{children}</main>
+          <main className="px-6 2xl:px-72 py-12">{children}</main>
+          <Toaster />
         </body>
       </html>
     </QueryContext>
