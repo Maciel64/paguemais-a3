@@ -28,9 +28,17 @@ namespace Controllers
         return Ok(client);
       }
 
-      catch (ClientCpfAlreadyRegisteredException e)
+      catch (ClientCpfAlreadyRegisteredException c)
+      {
+        return UnprocessableEntity(c.Message);
+      }
+      catch (ClientEmailAlreadyRegisteredException e)
       {
         return UnprocessableEntity(e.Message);
+      }
+      catch (ClientPhoneAlreadyRegisteredException p)
+      {
+        return UnprocessableEntity(p.Message);
       }
       catch (ClientInvalidCpfException e)
       {

@@ -25,6 +25,14 @@ namespace Repositories
     {
       return await _context.Clients.FirstOrDefaultAsync(client => client.Cpf == Cpf);
     }
+    public async Task<Client?> FindByEmail(string Email)
+    {
+      return await _context.Clients.FirstOrDefaultAsync(client => client.Email == Email);
+    }
+    public async Task<Client?> FindByPhone(int Phone)
+    {
+      return await _context.Clients.FirstOrDefaultAsync(client => client.Phone == Phone);
+    }
 
     public async Task<bool> IsValidCpfAsync(string Cpf)
     {
@@ -33,18 +41,18 @@ namespace Repositories
 
     private static bool IsValidCpf(string cpf)
     {
-      // Remove non-numeric characters
+
       cpf = new string(cpf.Where(char.IsDigit).ToArray());
 
-      // Check if the CPF has 11 digits
+
       if (cpf.Length != 11)
         return false;
 
-      // Check if all digits are the same
+
       if (cpf.All(c => c == cpf[0]))
         return false;
 
-      // Calculate the first verification digit
+
       int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
       int sum = 0;
 
@@ -54,7 +62,7 @@ namespace Repositories
       int remainder = sum % 11;
       int digit1 = remainder < 2 ? 0 : 11 - remainder;
 
-      // Calculate the second verification digit
+
       int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
       sum = 0;
 
@@ -64,7 +72,7 @@ namespace Repositories
       remainder = sum % 11;
       int digit2 = remainder < 2 ? 0 : 11 - remainder;
 
-      // Check if the verification digits are valid
+
       return cpf.EndsWith($"{digit1}{digit2}");
 
     }

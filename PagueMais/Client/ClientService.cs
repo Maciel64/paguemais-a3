@@ -16,9 +16,21 @@ namespace Services
 
     public async Task<Client> CreateAsync(Client client)
     {
-      var registeredClient = await _produtoRepository.FindByCpf(client.Cpf);
+      var registeredClientCpf = await _produtoRepository.FindByCpf(client.Cpf);
 
-      if (registeredClient is not null)
+      if (registeredClientCpf is not null)
+      {
+        throw new ClientCpfAlreadyRegisteredException();
+      }
+      var registeredClientEmail = await _produtoRepository.FindByEmail(client.Email);
+
+      if (registeredClientEmail is not null)
+      {
+        throw new ClientCpfAlreadyRegisteredException();
+      }
+      var registeredClientPhone = await _produtoRepository.FindByPhone(client.Phone);
+
+      if (registeredClientPhone is not null)
       {
         throw new ClientCpfAlreadyRegisteredException();
       }
