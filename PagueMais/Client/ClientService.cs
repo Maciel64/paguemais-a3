@@ -18,10 +18,10 @@ namespace Services
     //Adicionar usuário//
     public async Task<Client> CreateAsync(Client client)
     {
-
+      //Verificar se a data é válida
       ValidateClientAge(client.BirthDate);
-      //Teste para ver se o CPF é válido
 
+      //Teste para ver se o CPF é válido
       if (IsValidCpf(client.Cpf) == false)
       {
         throw new ClientInvalidCpfException();
@@ -62,39 +62,52 @@ namespace Services
     }
 
     //Editar Usuário//
-    public async Task UpdateAsync(Guid clientId, Client updatedClient)
+    public async Task UpdateAsync(Guid clientId, UpdateClientDTO updatedClient)
     {
+      //Verificar se ID existe
       var existingClient = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
 
-
-      ValidateClientAge(updatedClient.BirthDate);
-
-      //Verificar se o novo CPF já está em uso por outro cliente
-      var clientWithCpf = await _clientRepository.FindByCpfAsync(updatedClient.Cpf);
-      if (clientWithCpf != null && clientWithCpf.Id != clientId)
-        throw new ClientCpfAlreadyExistsException();
-
-      if (IsValidCpf(updatedClient.Cpf) == false)
-      {
-        throw new ClientInvalidCpfException();
-      }
-
-      //Verificar se o novo email já está em uso por outro cliente
-      var clientWithEmail = await _clientRepository.FindByEmailAsync(updatedClient.Email);
-      if (clientWithEmail != null && clientWithEmail.Id != clientId)
-        throw new ClientEmailAlreadyExistsException();
-
-      //Verificar se o novo telefone já está em uso por outro cliente
-      var clientWithPhone = await _clientRepository.FindByPhoneAsync(updatedClient.Phone);
-      if (clientWithPhone != null && clientWithPhone.Id != clientId)
-        throw new ClientPhoneAlreadyExistsException();
-
       //Atualize as propriedades do cliente existente com os novos valores
-      existingClient.Name = updatedClient.Name;
-      existingClient.Cpf = updatedClient.Cpf;
-      existingClient.Email = updatedClient.Email;
-      existingClient.Phone = updatedClient.Phone;
-      existingClient.BirthDate = updatedClient.BirthDate;
+      if (updatedClient.Name != null)
+      {
+        existingClient.Name = updatedClient.Name;
+      }
+      if (updatedClient.Cpf != null)
+      {
+        //Verificar se o novo CPF já está em uso por outro cliente
+        var clientWithCpf = await _clientRepository.FindByCpfAsync(updatedClient.Cpf);
+        if (clientWithCpf != null && clientWithCpf.Id != clientId)
+          throw new ClientCpfAlreadyExistsException();
+
+        //Teste para ver se o CPF é válido
+        if (IsValidCpf(updatedClient.Cpf) == false)
+        {
+          throw new ClientInvalidCpfException();
+        }
+        existingClient.Cpf = updatedClient.Cpf;
+      }
+      if (updatedClient.Email != null)
+      {
+        //Verificar se o novo email já está em uso por outro cliente
+        var clientWithEmail = await _clientRepository.FindByEmailAsync(updatedClient.Email);
+        if (clientWithEmail != null && clientWithEmail.Id != clientId)
+          throw new ClientEmailAlreadyExistsException();
+        existingClient.Email = updatedClient.Email;
+      }
+      if (updatedClient.Phone != 0)
+      {
+        //Verificar se o novo telefone já está em uso por outro cliente
+        var clientWithPhone = await _clientRepository.FindByPhoneAsync(updatedClient.Phone);
+        if (clientWithPhone != null && clientWithPhone.Id != clientId)
+          throw new ClientPhoneAlreadyExistsException();
+        existingClient.Phone = updatedClient.Phone;
+      }
+      if (updatedClient.BirthDate != new DateTime())
+      {
+        //Verificar se a data é válida
+        ValidateClientAge(updatedClient.BirthDate);
+        existingClient.BirthDate = updatedClient.BirthDate;
+      }
 
       await _clientRepository.UpdateAsync(existingClient);
     }

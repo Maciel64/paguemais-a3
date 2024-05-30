@@ -41,7 +41,7 @@ namespace Repositories
     {
       return await _context.Clients.FirstOrDefaultAsync(client => client.Email == email);
     }
-    public async Task<Client?> FindByPhoneAsync(int phone)
+    public async Task<Client?> FindByPhoneAsync(int? phone)
     {
       return await _context.Clients.FirstOrDefaultAsync(client => client.Phone == phone);
     }
