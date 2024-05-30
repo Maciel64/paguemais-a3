@@ -1,10 +1,14 @@
 @PagueMais_HostAddress = http://localhost:5151
 
+###Mostrar Todos os Clientes
 GET {{PagueMais_HostAddress}}/api/v1/clients
 Accept: application/json
 
-###
+### Selecionar Cliente pelo ID
+GET {{PagueMais_HostAddress}}/api/v1/clients/  ID
+Content-Type: application/json
 
+###Adicionar Clientes
 POST {{PagueMais_HostAddress}}/api/v1/clients
 Content-Type: application/json
 
@@ -13,5 +17,21 @@ Content-Type: application/json
   "Email": "email@email.com",
   "Cpf": "2",
   "Phone": "8499",
+  "BirthDate": "2024-05-25T15:30:00Z"
+}
+
+###Deletar Clientes
+DELETE {{PagueMais_HostAddress}}/api/v1/clients/  ID
+Content-Type: application/json
+
+###Editar Clientes
+PUT {{PagueMais_HostAddress}}/api/v1/clients/  ID
+Content-Type: application/json
+
+{
+  "Name": "Teste",
+  "Email": "novoemail@email.com",
+  "Cpf": "123.123.1432-21",
+  "Phone": "849959382",
   "BirthDate": "2024-05-25T15:30:00Z"
 }
