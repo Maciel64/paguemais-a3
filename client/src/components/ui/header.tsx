@@ -13,35 +13,39 @@ import {
 
 export const Header = () => {
   return (
-    <header className="py-6 px-96">
+    <header className="py-6 px-6 2xl:px-96">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Navegação</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <Link href="/purchases">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Compras
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/purchases"
+                className={navigationMenuTriggerStyle()}
+              >
+                Compras
+              </NavigationMenuLink>
 
-              <Link href="/clients">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Clientes
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/clients"
+                className={navigationMenuTriggerStyle()}
+              >
+                Clientes
+              </NavigationMenuLink>
 
-              <Link href="/products">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Produtos
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/products"
+                className={navigationMenuTriggerStyle()}
+              >
+                Produtos
+              </NavigationMenuLink>
 
-              <Link href="/team">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Equipe
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/team"
+                className={navigationMenuTriggerStyle()}
+              >
+                Equipe
+              </NavigationMenuLink>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
