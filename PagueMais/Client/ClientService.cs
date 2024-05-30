@@ -57,22 +57,15 @@ namespace Services
     //Remover Usuário//
     public async Task RemoveAsync(Guid clientId)
     {
-      var client = await _clientRepository.FindByIdAsync(clientId);
-
-      if (client == null)
-        throw new ClientNotFoundException();
-
+      var client = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
       await _clientRepository.RemoveAsync(client);
     }
 
     //Editar Usuário//
     public async Task UpdateAsync(Guid clientId, Client updatedClient)
     {
-      var existingClient = await _clientRepository.FindByIdAsync(clientId);
+      var existingClient = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
 
-      //Verificar se o id do cliente existe
-      if (existingClient == null)
-        throw new ClientNotFoundException();
 
       ValidateClientAge(updatedClient.BirthDate);
 
@@ -108,28 +101,22 @@ namespace Services
 
     public async Task<Client?> GetClientByIdAsync(Guid clientId)
     {
-      var client = await _clientRepository.FindByIdAsync(clientId);
-
-      if (client == null)
-        throw new ClientNotFoundException();
-
+      var client = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
       return client;
     }
 
     //Código para Testar Idade
-    private void ValidateClientAge(DateTime BirthDate)
+    private static void ValidateClientAge(DateTime BirthDate)
     {
       int age = DateTime.Now.Year - BirthDate.Year;
-      if (BirthDate > DateTime.Now.AddYears(-age)) age--;
+
+      if (age < 0)
       {
-        if (age < 0)
-        {
-          throw new ClientDateNotAceptedException();
-        }
-        if (age > 120)
-        {
-          throw new ClientAgeExceededException();
-        }
+        throw new ClientDateNotAceptedException();
+      }
+      if (age > 120)
+      {
+        throw new ClientAgeExceededException();
       }
     }
 
@@ -169,8 +156,6 @@ namespace Services
 
 
       return cpf.EndsWith($"{digit1}{digit2}");
-
     }
   }
-
 }
