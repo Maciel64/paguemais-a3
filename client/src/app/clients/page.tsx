@@ -20,15 +20,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Input } from "@/components/ui/input";
-
 import { Pencil, Trash } from "lucide-react";
 
 import { useClients } from "./useClients";
+import ClientForm from "@/components/forms/ClientForm";
+import { useClientForm } from "@/components/forms/useClientForm";
 
 const Clients = () => {
-  const { create, handleSubmit, isLoading, register, columns, table } =
-    useClients();
+  const {
+    isLoading,
+    columns,
+    table,
+    client,
+    setClient,
+    dialogUIState,
+    setDialogUIState,
+    closeDialog,
+  } = useClients();
+
+  const { deleteMutation } = useClientForm();
+
+  console.log(client);
 
   const tableHaveLeght = table?.getRowModel().rows?.length;
   const dateFormater = new Intl.DateTimeFormat("pt-BR");
@@ -68,11 +80,23 @@ const Clients = () => {
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {cell.column.id == "update" ? (
-                      <Button variant="outline">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setDialogUIState("updating");
+                          setClient(cell.row.original);
+                        }}
+                      >
                         <Pencil />
                       </Button>
                     ) : cell.column.id == "delete" ? (
-                      <Button variant="outline">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setDialogUIState("deleting");
+                          setClient(cell.row.original);
+                        }}
+                      >
                         <Trash />
                       </Button>
                     ) : cell.column.id == "birthDate" ? (
@@ -94,32 +118,34 @@ const Clients = () => {
         </TableBody>
       </Table>
 
-      <Dialog>
+      <Dialog open={dialogUIState !== "closed"}>
         <DialogTrigger asChild>
-          <Button className="mt-4">Novo</Button>
+          <Button className="mt-4" onClick={() => setDialogUIState("creating")}>
+            Novo
+          </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent onInteractOutside={closeDialog}>
           <DialogHeader>
-            <DialogTitle>Crie um novo Cliente</DialogTitle>
+            <DialogTitle>
+              {dialogUIState === "updating" ? (
+                <>Atualizando o cliente {client?.name}</>
+              ) : dialogUIState === "creating" ? (
+                <>Crie um novo Cliente</>
+              ) : (
+                <>Tem certeza que quer apagar o cliente {client?.name}?</>
+              )}
+            </DialogTitle>
+
+            {dialogUIState === "updating" || dialogUIState === "creating" ? (
+              <ClientForm client={client ?? undefined} />
+            ) : (
+              <Button
+                onClick={() => deleteMutation.mutate(client?.id as string)}
+              >
+                Confirmar
+              </Button>
+            )}
           </DialogHeader>
-
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit(create)}>
-            <Input {...register("name")} type="text" placeholder="Nome" />
-            <Input {...register("email")} type="text" placeholder="Email" />
-            <Input {...register("cpf")} type="text" placeholder="Cpf" />
-            <Input
-              {...register("phone")}
-              type="number"
-              placeholder="Telefone"
-            />
-            <Input
-              {...register("birthDate")}
-              type="date"
-              placeholder="Data de nascimento"
-            />
-
-            <Button>Concluir</Button>
-          </form>
         </DialogContent>
       </Dialog>
     </>
