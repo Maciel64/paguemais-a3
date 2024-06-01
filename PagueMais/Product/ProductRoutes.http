@@ -1,0 +1,31 @@
+@PagueMais_HostAddress = http://localhost:5151
+
+###Mostrar Todos os Produtos
+GET {{PagueMais_HostAddress}}/api/v1/products
+Accept: application/json
+
+### Selecionar Produto pelo ID
+GET {{PagueMais_HostAddress}}/api/v1/products/ba8ec88c-3eea-4b61-a485-2e5ad1c24d89
+Content-Type: application/json
+
+###Adicionar Produtos
+POST {{PagueMais_HostAddress}}/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Dipirona",
+  "price": 5
+}
+
+###Deletar Produtos
+DELETE {{PagueMais_HostAddress}}/api/v1/products/d90fef1b-0960-4725-8e05-10329c97d181
+Content-Type: application/json
+
+###Editar Produtos
+PUT {{PagueMais_HostAddress}}/api/v1/products/ba8ec88c-3eea-4b61-a485-2e5ad1c24d89
+Content-Type: application/json
+
+{
+  "name": "Paracetamol",
+  "price": 5
+}
