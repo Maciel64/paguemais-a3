@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { clientsService } from "../services/clients-service";
+import { clientsService } from "@/services/clients-service";
 import {
   ColumnDef,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { Client } from "@/types/client";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useClient } from "./useClient";
 import { create } from "zustand";
 
@@ -64,11 +64,7 @@ export const useClients = () => {
     []
   );
 
-  const {
-    data = [],
-    error,
-    isLoading,
-  } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: clientsService.getAll,
   });

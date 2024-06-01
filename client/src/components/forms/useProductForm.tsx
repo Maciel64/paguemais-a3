@@ -3,43 +3,38 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "../ui/use-toast";
-import { clientsService } from "@/services/clients-service";
 import { AxiosError } from "axios";
-import { CreateClientSchema, UpdateClientSchema } from "@/types/client";
-import { useClient } from "@/app/clients/useClient";
-import { useClients } from "@/app/clients/useClients";
+import { useUI } from "@/app/products/useProducts";
+import { productsService } from "@/services/products-service";
+import { CreateProductSchema, UpdateProductSchema } from "@/types/product";
 
-const createClientSchema = z.object({
+const createProductSchema = z.object({
   name: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  cpf: z.string(),
-  birthDate: z.string(),
+  price: z.number(),
 });
 
-type typeCreateClientSchema = z.infer<typeof createClientSchema>;
+type typeCreateProductSchema = z.infer<typeof createProductSchema>;
 
-export const useClientForm = () => {
+export const useProductForm = () => {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<typeCreateClientSchema>({
-    resolver: zodResolver(createClientSchema),
+  } = useForm<typeCreateProductSchema>({
+    resolver: zodResolver(createProductSchema),
   });
 
-  const { client, setClient } = useClient();
-  const { closeDialog } = useClients();
+  const { closeDialog, product } = useUI();
 
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: clientsService.create,
+    mutationFn: productsService.create,
     onSuccess: () => {
       toast({
         title: "Sucesso!",
       });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
@@ -51,34 +46,34 @@ export const useClientForm = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: clientsService.update,
+    mutationFn: productsService.update,
     onSuccess: () => {
       toast({
-        title: `Cliente ${client?.name} atualizado com sucesso!`,
+        title: `Produto ${product?.name} atualizado com sucesso!`,
       });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
       toast({
-        title: `Não foi possível atualizar o cliente ${client?.name}`,
+        title: `Não foi possível atualizar o produto ${product?.name}`,
         description: error.request.response,
       });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: clientsService.delete,
+    mutationFn: productsService.delete,
     onSuccess: () => {
       toast({
-        title: `Cliente ${client?.name} deletado com sucesso!`,
+        title: `Produto ${product?.name} deletado com sucesso!`,
       });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
       toast({
-        title: `Não foi possível apagar o cliente ${client?.name}`,
+        title: `Não foi possível apagar o produto ${product?.name}`,
         description: error.request.response,
       });
     },
@@ -89,10 +84,10 @@ export const useClientForm = () => {
     updateMutation.isPending ||
     deleteMutation.isPending;
 
-  const create: SubmitHandler<CreateClientSchema> = (data) =>
+  const create: SubmitHandler<CreateProductSchema> = (data) =>
     createMutation.mutate({ data });
 
-  const update = (id: string, data: UpdateClientSchema) =>
+  const update = (id: string, data: UpdateProductSchema) =>
     updateMutation.mutate({ id, data });
 
   return {
