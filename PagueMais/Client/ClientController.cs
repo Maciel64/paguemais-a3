@@ -12,6 +12,7 @@ namespace Controllers
   {
     private readonly ClientService _clientService = clientService;
 
+    //Método para printar todos os Clientes
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Client>>> GetClients()
     {
@@ -19,100 +20,146 @@ namespace Controllers
       return Ok(produtos);
     }
 
+    //Método para criar um novo cliente
     [HttpPost]
     public async Task<ActionResult<IEnumerable<Client>>> CreateClient([FromBody] Client client)
     {
       try
       {
+        //Cria novo Cliente
         await _clientService.CreateAsync(client);
         return Ok(client);
       }
 
+      //Retorno de ERRO caso CPF já exista
       catch (ClientCpfAlreadyRegisteredException e)
       {
         return UnprocessableEntity(e.Message);
       }
+
+      //Retorno de ERRO caso Email já exista
       catch (ClientEmailAlreadyRegisteredException e)
       {
         return UnprocessableEntity(e.Message);
       }
+
+      //Retorno de ERRO caso Telefone já exista
       catch (ClientPhoneAlreadyRegisteredException e)
       {
         return UnprocessableEntity(e.Message);
       }
+
+      //Retorno de ERRO caso CPF não seja válido
       catch (ClientInvalidCpfException e)
       {
         return BadRequest(e.Message);
       }
+
+      //Retorno de ERRO caso Idade seja maior que o limite
       catch (ClientAgeExceededException e)
       {
         return BadRequest(e.Message);
       }
+
+      //Retorno de ERRO caso Data seja no futuro
       catch (ClientDateNotAceptedException e)
       {
         return BadRequest(e.Message);
       }
     }
 
+    //Método para deletar Cliente
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteClient(Guid id)
     {
       try
       {
+        //Deleta o Cliente
         await _clientService.RemoveAsync(id);
         return NoContent();
       }
+
+      //Retorno de ERRO caso ID do Cliente não seja encontrado
       catch (ClientNotFoundException e)
       {
         return NotFound(e.Message);
       }
     }
 
+    //Método para Editar Cliente
     [HttpPut("{Id}")]
-    public async Task<IActionResult> UpdateClient(Guid id, [FromBody] Client client)
+    public async Task<IActionResult> UpdateClient(Guid id, [FromBody] UpdateClientDTO client)
     {
       try
       {
+        //Atualiza o Cliente
         await _clientService.UpdateAsync(id, client);
-        return NoContent();
+
+        //Busca Cliente atualizado
+        var updatedClient = await _clientService.GetClientByIdAsync(id);
+
+        //Retorna cliente atualizado
+        return Ok(updatedClient);
       }
+
+      //Retorno de ERRO caso Cliente não exista
       catch (ClientNotFoundException e)
       {
         return NotFound(e.Message);
       }
+
+      //Retorno de ERRO caso CPF é inválido
       catch (ClientInvalidCpfException e)
       {
         return BadRequest(e.Message);
       }
+
+      //Retorno de ERRO caso CPF já exista
       catch (ClientCpfAlreadyExistsException e)
       {
         return Conflict(e.Message);
       }
+
+      //Retorno de ERRO caso Email Já exista
       catch (ClientEmailAlreadyExistsException e)
       {
         return Conflict(e.Message);
       }
+
+      //Retorno de ERRO caso Telefone já exista
       catch (ClientPhoneAlreadyExistsException e)
       {
         return Conflict(e.Message);
       }
+
+      //Retorno de ERRO caso Idade seja maior que o limite
       catch (ClientAgeExceededException e)
       {
         return BadRequest(e.Message);
       }
+
+      //Retorno de ERRO caso Data seja no futuro
       catch (ClientDateNotAceptedException e)
       {
         return BadRequest(e.Message);
       }
     }
+
+    //Método para printar Cliente pelo ID
     [HttpGet("{Id}")]
     public async Task<IActionResult> GetClientById(Guid id)
     {
       try
       {
+
+        //Busca Cliente
         var client = await _clientService.GetClientByIdAsync(id);
+
+        //Retorna Clientes
         return Ok(client);
       }
+
+      //Retorno de ERRO caso Cliente não exista
       catch (ClientNotFoundException e)
       {
         return NotFound(e.Message);
