@@ -5,7 +5,7 @@ namespace Entities
         public string? Name { get; set; } = Name;
         public string? Cpf { get; set; } = Cpf;
         public string? Email { get; set; } = Email;
-        public int? Phone { get; set; } = Phone;
-        public DateTime? BirthDate { get; set; } = BirthDate;
+        public int Phone { get; set; } = Phone;
+        public DateTime BirthDate { get; set; } = BirthDate;
     }
 }

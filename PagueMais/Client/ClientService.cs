@@ -64,36 +64,41 @@ namespace Services
     //Editar Usuário//
     public async Task UpdateAsync(Guid clientId, UpdateClientDTO updatedClient)
     {
+
       //Verificar se ID existe
       var existingClient = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
 
-      //Atualize as propriedades do cliente existente com os novos valores
-      if (updatedClient.Name != null)
+      //Atualiza Nome se não for vazio
+      if (updatedClient.Name != "")
       {
         existingClient.Name = updatedClient.Name;
       }
-      if (updatedClient.Cpf != null)
+
+      //Atualiza CPF caso o não seja igual a de outro cliente, seja válido e não vazio
+      if (updatedClient.Cpf != "")
       {
-        //Verificar se o novo CPF já está em uso por outro cliente
         var clientWithCpf = await _clientRepository.FindByCpfAsync(updatedClient.Cpf);
         if (clientWithCpf != null && clientWithCpf.Id != clientId)
           throw new ClientCpfAlreadyExistsException();
 
-        //Teste para ver se o CPF é válido
         if (IsValidCpf(updatedClient.Cpf) == false)
         {
           throw new ClientInvalidCpfException();
         }
         existingClient.Cpf = updatedClient.Cpf;
       }
-      if (updatedClient.Email != null)
+
+      //Atualiza Email caso o não seja igual a de outro cliente e não vazio
+      if (updatedClient.Email != "")
       {
-        //Verificar se o novo email já está em uso por outro cliente
+
         var clientWithEmail = await _clientRepository.FindByEmailAsync(updatedClient.Email);
         if (clientWithEmail != null && clientWithEmail.Id != clientId)
           throw new ClientEmailAlreadyExistsException();
         existingClient.Email = updatedClient.Email;
       }
+
+      //Atualiza Phone caso o não seja igual a de outro cliente e não vazio
       if (updatedClient.Phone != 0)
       {
         //Verificar se o novo telefone já está em uso por outro cliente
@@ -102,6 +107,8 @@ namespace Services
           throw new ClientPhoneAlreadyExistsException();
         existingClient.Phone = updatedClient.Phone;
       }
+
+      //Atualiza Data de Nascimento caso o não seja inválido e não vazio
       if (updatedClient.BirthDate != new DateTime())
       {
         //Verificar se a data é válida
@@ -112,13 +119,14 @@ namespace Services
       await _clientRepository.UpdateAsync(existingClient);
     }
 
+    //Método para achar o Cliente pelo ID
     public async Task<Client?> GetClientByIdAsync(Guid clientId)
     {
       var client = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
       return client;
     }
 
-    //Código para Testar Idade
+    //Método para Testar Idade
     private static void ValidateClientAge(DateTime BirthDate)
     {
       int age = DateTime.Now.Year - BirthDate.Year;
@@ -133,7 +141,7 @@ namespace Services
       }
     }
 
-    //Código para teste do CPF
+    //Método para teste do CPF
     private static bool IsValidCpf(string cpf)
     {
 

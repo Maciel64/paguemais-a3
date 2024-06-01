@@ -15,9 +15,9 @@ Content-Type: application/json
 {
   "Name": "Teste",
   "Email": "email@email.com",
-  "Cpf": "2",
+  "Cpf": "143.133.125-12",
   "Phone": "8499",
-  "BirthDate": "2024-05-25T15:30:00Z"
+  "BirthDate": "2025-05-25T15:30:00Z"
 }
 
 ###Deletar Clientes
@@ -25,13 +25,13 @@ DELETE {{PagueMais_HostAddress}}/api/v1/clients/  ID
 Content-Type: application/json
 
 ###Editar Clientes
-PUT {{PagueMais_HostAddress}}/api/v1/clients/  ID
+PUT {{PagueMais_HostAddress}}/api/v1/clients/2f135d3f-3357-462e-9d45-f79b9287026a
 Content-Type: application/json
 
 {
-  "Name": "Teste",
-  "Email": "novoemail@email.com",
-  "Cpf": "123.123.1432-21",
-  "Phone": "849959382",
-  "BirthDate": "2024-05-25T15:30:00Z"
+  "Name": "",
+  "Email": "",
+  "Cpf": "",
+  "Phone": "0",
+  "BirthDate": "0001-01-01T12:00:00Z"
 }
