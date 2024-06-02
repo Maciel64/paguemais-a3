@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Entities
 {
   public class Client(string Name, string Cpf, string Email, int Phone, DateTime BirthDate)
   {
+    [Key]
     public Guid Id { get; set; } = new();
     public string Name { get; set; } = Name;
     public string Cpf { get; set; } = Cpf;
@@ -10,5 +13,7 @@ namespace Entities
     public DateTime BirthDate { get; set; } = BirthDate;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; } = null;
+    public ICollection<Purchase> Purchases {get; set;}
+
   }
 }

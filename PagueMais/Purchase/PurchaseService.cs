@@ -4,6 +4,7 @@ using Entities;
 using Exceptions;
 using Repositories;
 
+
 namespace Services
 {
   public class PurchaseService(PurchaseRepository purchaseRepository)
@@ -18,6 +19,18 @@ namespace Services
     //Adicionar Compra//
     public async Task<Purchase> CreateAsync(Purchase purchase)
     {    
+      //if (purchase == null)
+       // throw new ArgumentNullException(nameof(purchase));
+
+      //Validação de dados
+     // if (string.IsNullOrWhiteSpace(purchase.ClientId) || purchase.Total <= 0)
+      //  throw new InvalidPurchaseException("Invalid purchase data.");
+
+      // Verificação de cliente
+      //var client = await _PurchaseRepository.FindClientByIdAsync(purchase.ClientId);
+      //if (client == null)
+      //  throw new ClientNotFoundException();
+
         return await _PurchaseRepository.CreateAsync(purchase);
     }
 
@@ -28,7 +41,7 @@ namespace Services
       await _PurchaseRepository.RemoveAsync(purchase);
     }
 
-    //Editar Usuário//
+    //Editar compra//
     public async Task UpdateAsync(Guid purchaseId, UpdatePurchaseDTO updatedPurchase)
     {
      //Verificar se ID existe
@@ -38,7 +51,7 @@ namespace Services
       await _PurchaseRepository.UpdateAsync(existingClient);
     }
 
-    //Método para achar o Cliente pelo ID
+    //Método para achar a compra pelo ID
     public async Task<Purchase?> GetPurchaseByIdAsync(Guid purchaseId)
     {
       var purchase = await _PurchaseRepository.FindByIdAsync(purchaseId) ?? throw new ClientNotFoundException();
