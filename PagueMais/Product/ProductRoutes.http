@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "name": "Dipirona",
-  "price": 5
+  "price": 2
 }
 
 ###Deletar Produtos

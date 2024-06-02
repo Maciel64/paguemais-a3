@@ -3,7 +3,17 @@ using Entities;
 
 namespace Repositories
 {
-  public class ProductRepository(Database context)
+  public interface IProductRepository
+  {
+    public IEnumerable<Product> GetAll();
+    Product? FindById(Guid productId);
+    public Product Create(Product product);
+
+    void Update(Product product);
+    public void Remove(Product product);
+  }
+
+  public class ProductRepository(Database context) : IProductRepository
   {
     public readonly Database _context = context;
 

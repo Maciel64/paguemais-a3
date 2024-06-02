@@ -4,9 +4,9 @@ using Repositories;
 
 namespace Services
 {
-  public class ProductService(ProductRepository productRepository)
+  public class ProductService(IProductRepository productRepository)
   {
-    private readonly ProductRepository _productRepository = productRepository;
+    private readonly IProductRepository _productRepository = productRepository;
 
     public IEnumerable<Product> GetAll()
     {
@@ -14,7 +14,7 @@ namespace Services
     }
 
     //Método para achar o Produto pelo ID
-    public Product? GetById(Guid productId)
+    public Product GetById(Guid productId)
     {
       var product = _productRepository.FindById(productId) ?? throw new ProductNotFoundException();
       return product;
