@@ -18,6 +18,9 @@ builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+builder.Services.AddScoped<PurchaseService>();
+builder.Services.AddScoped<PurchaseRepository>();
+
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowSpecificOrigin",

@@ -70,12 +70,12 @@ namespace Controllers
 
     //Método para deletar Cliente
     [HttpDelete("{Id}")]
-    public async Task<IActionResult> DeleteClient(Guid id)
+    public IActionResult DeleteClient(Guid id)
     {
       try
       {
         //Deleta o Cliente
-        await _clientService.RemoveAsync(id);
+        _clientService.RemoveAsync(id);
         return NoContent();
       }
 
@@ -96,7 +96,7 @@ namespace Controllers
         await _clientService.UpdateAsync(id, client);
 
         //Busca Cliente atualizado
-        var updatedClient = await _clientService.GetClientByIdAsync(id);
+        var updatedClient = _clientService.GetClientById(id);
 
         //Retorna cliente atualizado
         return Ok(updatedClient);
@@ -147,13 +147,13 @@ namespace Controllers
 
     //Método para printar Cliente pelo ID
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetClientById(Guid id)
+    public IActionResult GetClientById(Guid id)
     {
       try
       {
 
         //Busca Cliente
-        var client = await _clientService.GetClientByIdAsync(id);
+        var client = _clientService.GetClientById(id);
 
         //Retorna Clientes
         return Ok(client);

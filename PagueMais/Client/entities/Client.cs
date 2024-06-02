@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Entities
 {
@@ -13,7 +14,7 @@ namespace Entities
     public DateTime BirthDate { get; set; } = BirthDate;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; } = null;
-    public ICollection<Purchase> Purchases {get; set;}
-
+    [JsonIgnore]
+    public ICollection<Purchase>? Purchases { get; set; }
   }
 }

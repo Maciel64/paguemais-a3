@@ -15,9 +15,9 @@ Content-Type: application/json
 {
   "Name": "Teste",
   "Email": "email@email.com",
-  "Cpf": "143.133.125-12",
+  "Cpf": "431.926.450-91",
   "Phone": "8499",
-  "BirthDate": "2025-05-25T15:30:00Z"
+  "BirthDate": "2023-05-25T15:30:00Z"
 }
 
 ###Deletar Clientes

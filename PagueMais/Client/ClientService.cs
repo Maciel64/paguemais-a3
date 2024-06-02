@@ -28,7 +28,7 @@ namespace Services
       }
 
       //Teste para ver se o CPF se repete
-      var registeredClientCpf = await _clientRepository.FindByCpf(client.Cpf);
+      var registeredClientCpf = _clientRepository.FindByCpf(client.Cpf);
 
       if (registeredClientCpf is not null)
       {
@@ -55,10 +55,10 @@ namespace Services
     }
 
     //Remover Usuário//
-    public async Task RemoveAsync(Guid clientId)
+    public void RemoveAsync(Guid clientId)
     {
-      var client = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
-      await _clientRepository.RemoveAsync(client);
+      var client = _clientRepository.FindById(clientId) ?? throw new ClientNotFoundException();
+      _clientRepository.RemoveAsync(client);
     }
 
     //Editar Usuário//
@@ -66,7 +66,7 @@ namespace Services
     {
 
       //Verificar se ID existe
-      var existingClient = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
+      var existingClient = _clientRepository.FindById(clientId) ?? throw new ClientNotFoundException();
 
       //Atualiza Nome se não for vazio
       if (updatedClient.Name != "")
@@ -120,9 +120,9 @@ namespace Services
     }
 
     //Método para achar o Cliente pelo ID
-    public async Task<Client?> GetClientByIdAsync(Guid clientId)
+    public Client? GetClientById(Guid clientId)
     {
-      var client = await _clientRepository.FindByIdAsync(clientId) ?? throw new ClientNotFoundException();
+      var client = _clientRepository.FindById(clientId) ?? throw new ClientNotFoundException();
       return client;
     }
 

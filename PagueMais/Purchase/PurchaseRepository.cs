@@ -9,39 +9,38 @@ namespace Repositories
     private readonly Database _context = context;
 
     //Método para printar todos as compra
-    public async Task<IEnumerable<Purchase>> GetAllAsync()
+    public IEnumerable<Purchase> GetAll()
     {
-      return await _context.Purchase.ToListAsync();
+      return [.. _context.Purchases];
     }
 
     //Método para criar uma compra
-    public async Task<Purchase> CreateAsync(Purchase purchase)
+    public Purchase Create(Purchase purchase)
     {
-      _context.Purchase.Add(purchase);
-      await _context.SaveChangesAsync();
+      _context.Purchases.Add(purchase);
+      _context.SaveChanges();
 
       return purchase;
     }
 
     //Método para achar Compra pelo ID
-    public async Task<Purchase?> FindByIdAsync(Guid id)
+    public Purchase? FindById(Guid id)
     {
-      return await _context.Purchase.FindAsync(id);
+      return _context.Purchases.Find(id);
     }
 
     //Método para Remover a Compra
-    public async Task RemoveAsync(Purchase purchase)
+    public void Remove(Purchase purchase)
     {
-      _context.Purchase.Remove(purchase);
-      await _context.SaveChangesAsync();
+      _context.Purchases.Remove(purchase);
+      _context.SaveChanges();
     }
 
     //Método para Editar Compra
-    public async Task UpdateAsync(Purchase purchase)
+    public void Update(Purchase purchase)
     {
-      _context.Purchase.Update(purchase);
-      await _context.SaveChangesAsync();
+      _context.Purchases.Update(purchase);
+      _context.SaveChanges();
     }
-
   }
 }

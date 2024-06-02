@@ -7,55 +7,70 @@ using Repositories;
 
 namespace Services
 {
-  public class PurchaseService(PurchaseRepository purchaseRepository)
+  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository)
   {
-    private readonly PurchaseRepository _PurchaseRepository = purchaseRepository;
+    private readonly PurchaseRepository _purchaseRepository = purchaseRepository;
+    private readonly ClientRepository _clientRepository = clientRepository;
 
-    public async Task<IEnumerable<Purchase>> GetAllAsync()
+    public IEnumerable<Purchase> GetAll()
     {
-      return await _PurchaseRepository.GetAllAsync();
+      return _purchaseRepository.GetAll();
     }
 
     //Adicionar Compra//
-    public async Task<Purchase> CreateAsync(Purchase purchase)
-    {    
-      //if (purchase == null)
-       // throw new ArgumentNullException(nameof(purchase));
+    public Purchase Create(Purchase purchase)
+    {
+      _ = _clientRepository.FindById(purchase.ClientId) ?? throw new ClientNotFoundException();
 
-      //Validação de dados
-     // if (string.IsNullOrWhiteSpace(purchase.ClientId) || purchase.Total <= 0)
-      //  throw new InvalidPurchaseException("Invalid purchase data.");
+      if (purchase.Total < 0)
+      {
+        throw new PurchaseTotalIsInvalidException();
+      }
 
-      // Verificação de cliente
-      //var client = await _PurchaseRepository.FindClientByIdAsync(purchase.ClientId);
-      //if (client == null)
-      //  throw new ClientNotFoundException();
-
-        return await _PurchaseRepository.CreateAsync(purchase);
+      return _purchaseRepository.Create(purchase);
     }
 
     //Remover Compra//
-    public async Task RemoveAsync(Guid purchaseId)
+    public void Remove(Guid purchaseId)
     {
-      var purchase = await _PurchaseRepository.FindByIdAsync(purchaseId) ?? throw new ClientNotFoundException();
-      await _PurchaseRepository.RemoveAsync(purchase);
+      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new PurchaseNotFoundException();
+      _purchaseRepository.Remove(purchase);
     }
 
     //Editar compra//
-    public async Task UpdateAsync(Guid purchaseId, UpdatePurchaseDTO updatedPurchase)
+    public void Update(Guid purchaseId, UpdatePurchaseDTO updatedPurchase)
     {
-     //Verificar se ID existe
-      var existingClient = await _PurchaseRepository.FindByIdAsync(purchaseId) ?? throw new ClientNotFoundException();
+      //Verificar se ID existe
+      var existingPurchase = _purchaseRepository.FindById(purchaseId) ?? throw new PurchaseNotFoundException();
 
+      if (updatedPurchase.Total is not null)
+      {
+        if (updatedPurchase.Total < 0)
+        {
+          throw new PurchaseTotalIsInvalidException();
+        }
 
-      await _PurchaseRepository.UpdateAsync(existingClient);
+        existingPurchase.Total = (float)updatedPurchase.Total;
+      }
+
+      if (updatedPurchase.PaymentMethod is not null)
+      {
+        existingPurchase.PaymentMethod = (EnumMethods)updatedPurchase.PaymentMethod;
+      }
+
+      if (updatedPurchase.Status is not null)
+      {
+        existingPurchase.Status = (EnumStatus)updatedPurchase.Status;
+      }
+
+      _purchaseRepository.Update(existingPurchase);
     }
 
     //Método para achar a compra pelo ID
-    public async Task<Purchase?> GetPurchaseByIdAsync(Guid purchaseId)
+    public Purchase? GetPurchaseById(Guid purchaseId)
     {
-      var purchase = await _PurchaseRepository.FindByIdAsync(purchaseId) ?? throw new ClientNotFoundException();
+      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new Exception();
       return purchase;
     }
-}
+  }
 }

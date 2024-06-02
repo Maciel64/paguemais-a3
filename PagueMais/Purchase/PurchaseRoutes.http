@@ -1,0 +1,33 @@
+@PagueMais_HostAddress = http://localhost:5151
+
+###Mostrar Todos os Clientes
+GET {{PagueMais_HostAddress}}/api/v1/purchases
+Accept: application/json
+
+### Selecionar Cliente pelo ID
+GET {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+Content-Type: application/json
+
+###Adicionar Clientes
+POST {{PagueMais_HostAddress}}/api/v1/purchases
+Content-Type: application/json
+
+{
+  "total": 10,
+  "clientId": "2c21a72a-2f04-4390-a678-19ff41e9f794",
+  "paymentMethod": 1
+}
+
+###Deletar Clientes
+DELETE {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+Content-Type: application/json
+
+###Editar Clientes
+PUT {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+Content-Type: application/json
+
+{
+  "total": 100,
+  "paymentMethod": 1,
+  "status": 2
+}

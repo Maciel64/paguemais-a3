@@ -24,9 +24,9 @@ namespace Repositories
     }
 
     //Método para achar Cliente pelo ID
-    public async Task<Client?> FindByIdAsync(Guid id)
+    public Client? FindById(Guid id)
     {
-      return await _context.Clients.FindAsync(id);
+      return _context.Clients.Find(id);
     }
 
     //Método para Remover o Cliente
@@ -62,9 +62,9 @@ namespace Repositories
     }
 
     //Método para achar Cliente pelo CPF
-    public async Task<Client?> FindByCpf(string Cpf)
+    public Client? FindByCpf(string Cpf)
     {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Cpf == Cpf);
+      return _context.Clients.FirstOrDefault(client => client.Cpf == Cpf);
     }
 
     //Método para achar Cliente pelo Email

@@ -12,25 +12,37 @@ public enum EnumMethods
 {
     Credit,
     Debit,
-    Pix,  
+    Pix,
     Money
 }
 
 namespace Entities
 {
-    public class Purchase(int Total, EnumStatus Status, DateTime FinishedAt, EnumMethods PaymentMethod)
+    public class Purchase
     {
+        public Purchase()
+        {
+
+        }
+
+        public Purchase(float Total, EnumMethods PaymentMethod, Guid ClientId)
+        {
+            this.Total = Total;
+            this.PaymentMethod = PaymentMethod;
+            this.ClientId = ClientId;
+        }
+
         // Propriedades - Construtor
         [Key]
         public Guid Id { get; set; } = new();
-        public float Total { get; set; } = Total;
-        public EnumStatus Status { get; set; } = Status;
-        public DateTime FinishedAt { get; set; } = FinishedAt;
-        public EnumMethods PaymentMethod { get; set; } = PaymentMethod;
+        public float Total { get; set; }
+        public EnumMethods PaymentMethod { get; set; }
+        public EnumStatus Status { get; set; } = EnumStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? FinishedAt { get; set; }
         public DateTime? UpdatedAt { get; set; } = null;
         [ForeignKey("Client")]
-        public Guid ClientId {get; set;} 
-        public Client Client {get; set;} 
+        public Guid ClientId { get; set; }
+        public Client? Client { get; set; }
     }
 }
