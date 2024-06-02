@@ -1,7 +1,7 @@
 "use client";
 
-import { flexRender } from "@tanstack/react-table";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, Pencil, Trash } from "lucide-react";
+
 import {
   Table,
   TableBody,
@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useProducts } from "./useProducts";
+import { flexRender } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
@@ -19,29 +20,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import ProductForm from "@/components/forms/ProductForm";
+import { useProductForm } from "@/components/forms/useProductForm";
 
-import { Pencil, Trash } from "lucide-react";
-
-import { useClients } from "./useClients";
-import ClientForm from "@/components/forms/ClientForm";
-import { useClientForm } from "@/components/forms/useClientForm";
-
-const Clients = () => {
+const Products = () => {
   const {
-    isLoading,
     columns,
     table,
-    client,
-    setClient,
+    isLoading,
     dialogUIState,
     setDialogUIState,
     closeDialog,
-  } = useClients();
+    product,
+    setIsDeleting,
+    setIsUpdating,
+  } = useProducts();
 
-  const { deleteMutation } = useClientForm();
+  const { deleteMutation } = useProductForm();
 
+  const dateFormater = new Intl.DateTimeFormat("pt-BR", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   const tableHaveLeght = table?.getRowModel().rows?.length;
-  const dateFormater = new Intl.DateTimeFormat("pt-BR");
 
   return isLoading ? (
     <LoaderIcon className="animate-spin" />
@@ -80,25 +85,19 @@ const Clients = () => {
                     {cell.column.id == "update" ? (
                       <Button
                         variant="outline"
-                        onClick={() => {
-                          setDialogUIState("updating");
-                          setClient(cell.row.original);
-                        }}
+                        onClick={() => setIsUpdating(cell.row.original)}
                       >
                         <Pencil />
                       </Button>
                     ) : cell.column.id == "delete" ? (
                       <Button
                         variant="outline"
-                        onClick={() => {
-                          setDialogUIState("deleting");
-                          setClient(cell.row.original);
-                        }}
+                        onClick={() => setIsDeleting(cell.row.original)}
                       >
                         <Trash />
                       </Button>
-                    ) : cell.column.id == "birthDate" ? (
-                      dateFormater.format(new Date(cell.getValue() as Date))
+                    ) : cell.column.id == "createdAt" ? (
+                      dateFormater.format(new Date())
                     ) : (
                       (cell.getValue() as string)
                     )}
@@ -126,19 +125,19 @@ const Clients = () => {
           <DialogHeader>
             <DialogTitle>
               {dialogUIState === "updating" ? (
-                <>Atualizando o cliente {client?.name}</>
+                <>Atualizando o cliente {product?.name}</>
               ) : dialogUIState === "creating" ? (
-                <>Crie um novo Cliente</>
+                <>Crie um novo Produto</>
               ) : (
-                <>Tem certeza que quer apagar o cliente {client?.name}?</>
+                <>Tem certeza que quer apagar o produto {product?.name}?</>
               )}
             </DialogTitle>
 
             {dialogUIState === "updating" || dialogUIState === "creating" ? (
-              <ClientForm client={client ?? undefined} />
+              <ProductForm product={product ?? undefined} />
             ) : (
               <Button
-                onClick={() => deleteMutation.mutate(client?.id as string)}
+                onClick={() => deleteMutation.mutate(product?.id as string)}
               >
                 Confirmar
               </Button>
@@ -150,4 +149,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default Products;

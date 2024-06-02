@@ -15,6 +15,9 @@ builder.Services.AddDbContext<Database>();
 builder.Services.AddScoped<ClientRepository>();
 builder.Services.AddScoped<ClientService>();
 
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowSpecificOrigin",
