@@ -1,21 +1,21 @@
+using System;
+using System.Threading.Tasks;
 using Moq;
 using Xunit;
 using Services;
 using Entities;
+using Repositories;
+using Exceptions;
 
-
-namespace Tests.Tests
+namespace Tests
 {
-
     public class ClientServiceTests
     {
-
         private readonly Mock<IClientRepository> _mockClientRepository;
         private readonly ClientService _clientService;
 
         public ClientServiceTests()
         {
-            // Inicializa os mocks e o serviço
             _mockClientRepository = new Mock<IClientRepository>();
             _clientService = new ClientService(_mockClientRepository.Object);
         }
@@ -45,9 +45,8 @@ namespace Tests.Tests
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _mockClientRepository.Setup(repo => repo.GetByIdAsync(clientId))
+            _mockClientRepository.Setup(repo => repo.FindByIdAsync(clientId))
                 .ReturnsAsync(existingClient);
-
             _mockClientRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Client>()))
                 .Returns(Task.CompletedTask);
 
@@ -73,15 +72,13 @@ namespace Tests.Tests
             var clientId = Guid.NewGuid();
             var updateDto = new UpdateClientDTO();
 
-            _mockClientRepository.Setup(repo => repo.GetByIdAsync(clientId))
+            _mockClientRepository.Setup(repo => repo.FindByIdAsync(clientId))
                 .ReturnsAsync((Client)null);
 
             // Act & Assert
             await Assert.ThrowsAsync<ClientNotFoundException>(() =>
                 _clientService.UpdateAsync(clientId, updateDto));
         }
-
-        // Adicione mais testes para as outras exceções, se necessário
 
         [Fact]
         public async Task GetClientByIdAsync_ShouldReturnClient_WhenClientExists()
@@ -100,7 +97,7 @@ namespace Tests.Tests
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _mockClientRepository.Setup(repo => repo.GetByIdAsync(clientId))
+            _mockClientRepository.Setup(repo => repo.FindByIdAsync(clientId))
                 .ReturnsAsync(existingClient);
 
             // Act
@@ -111,19 +108,17 @@ namespace Tests.Tests
         }
 
         [Fact]
-        public async Task GetClientByIdAsync_ShouldReturnNull_WhenClientDoesNotExist()
+        public async Task GetClientByIdAsync_ShouldThrowClientNotFoundException_WhenClientDoesNotExist()
         {
             // Arrange
             var clientId = Guid.NewGuid();
 
-            _mockClientRepository.Setup(repo => repo.GetByIdAsync(clientId))
+            _mockClientRepository.Setup(repo => repo.FindByIdAsync(clientId))
                 .ReturnsAsync((Client)null);
 
-            // Act
-            var client = await _clientService.GetClientByIdAsync(clientId);
-
-            // Assert
-            Assert.Null(client);
+            // Act & Assert
+            await Assert.ThrowsAsync<ClientNotFoundException>(() =>
+                _clientService.GetClientByIdAsync(clientId));
         }
     }
 }

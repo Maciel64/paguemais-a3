@@ -1,11 +1,22 @@
 namespace Entities
 {
-    public class UpdateClientDTO(string Name, string Cpf, string Email, int Phone, DateTime BirthDate)
+    public class UpdateClientDTO
     {
-        public string Name { get; set; } = Name;
-        public string Cpf { get; set; } = Cpf;
-        public string Email { get; set; } = Email;
-        public int Phone { get; set; } = Phone;
-        public DateTime BirthDate { get; set; } = BirthDate;
+        public string Name { get; set; }
+        public string Cpf { get; set; }
+        public string Email { get; set; }
+        public int Phone { get; set; }
+        public DateTime BirthDate { get; set; }
+
+        public UpdateClientDTO() { }
+
+        public UpdateClientDTO(string name, string cpf, string email, int phone, DateTime birthDate)
+        {
+            Name = name;
+            Cpf = cpf;
+            Email = email;
+            Phone = phone;
+            BirthDate = birthDate;
+        }
     }
 }
