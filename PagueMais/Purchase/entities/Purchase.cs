@@ -32,7 +32,6 @@ namespace Entities
             this.ClientId = ClientId;
         }
 
-        // Propriedades - Construtor
         [Key]
         public Guid Id { get; set; } = new();
         public float Total { get; set; }
