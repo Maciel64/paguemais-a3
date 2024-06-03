@@ -1,20 +1,22 @@
 @PagueMais_HostAddress = http://localhost:5151
 
-###Mostrar Todos os Clientes
-GET {{PagueMais_HostAddress}}/api/v1/carts/increment/39567cfa-9e8d-4428-a8db-f49040d39a88
-Accept: application/json
+### Obter Todos os Carrinhos
+GET {{PagueMais_HostAddress}}/api/v1/carts
 
-### Selecionar Cliente pelo ID
-GET {{PagueMais_HostAddress}}/api/v1/carts/decrement/39567cfa-9e8d-4428-a8db-f49040d39a88
-Content-Type: application/json
-
-###
-
+### Criar Carrinho
 POST {{PagueMais_HostAddress}}/api/v1/carts
 Content-Type: application/json
 
 {
-  "productId": "9435570c-185b-4866-b674-d34316a6adde",
-  "purchaseId": "2c01ef49-3742-4351-9457-a4baa3d276bb",
-  "quantity": 1
+  "productId": "412ef2bf-d2a6-4c1c-911d-f56cc3161878",
+  "purchaseId": "f26ed91e-8515-40ff-97c5-6e821b2ed7c0"
 }
+
+### Incrementar Quantidade do Produto no Carrinho
+GET {{PagueMais_HostAddress}}/api/v1/carts/increment/5285a710-a6c0-4857-826c-1257d91c56b0
+
+### Decrementar Quantidade do Produto no Carrinho
+GET {{PagueMais_HostAddress}}/api/v1/carts/decrement/CartGUID
+
+### Remover Produto do Carrinho
+DELETE GET {{PagueMais_HostAddress}}/api/v1/carts/remove/CartGUID

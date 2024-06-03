@@ -1,22 +1,76 @@
 using Moq;
-using Repositories;
 using Services;
+using Repositories;
+using Entities;
+using Exceptions;
+using Xunit;
 
 namespace Tests
 {
-  public class CartServiceTest
+  public class CartServiceTests
   {
-    private readonly Mock<ICartRepository> _cartRepository;
-    private readonly Mock<IProductRepository> _productRepository;
-    private readonly Mock<IPurchaseRepository> _purchaseRepository;
     private readonly CartService _cartService;
+    private readonly Mock<ICartRepository> _mockCartRepository = new();
+    private readonly Mock<IPurchaseRepository> _mockPurchaseRepository = new();
+    private readonly Mock<IProductRepository> _mockProductRepository = new();
 
-    public CartServiceTest()
+    public CartServiceTests()
     {
-      _cartRepository = new Mock<ICartRepository>();
-      _productRepository = new Mock<IProductRepository>();
-      _purchaseRepository = new Mock<IPurchaseRepository>();
-      _cartService = new CartService(_cartRepository.Object, _purchaseRepository.Object, _productRepository.Object);
+      _cartService = new CartService(_mockCartRepository.Object, _mockPurchaseRepository.Object, _mockProductRepository.Object);
+    }
+
+    [Fact]
+    public void Create_ShouldThrowProductNotFoundException_WhenProductDoesNotExist()
+    {
+      var productId = Guid.NewGuid();
+      var purchaseId = Guid.NewGuid();
+
+      _mockProductRepository.Setup(repo => repo.FindById(productId)).Returns((Product)null);
+
+      Assert.Throws<ProductNotFoundException>(() => _cartService.Create(productId, purchaseId));
+    }
+
+    [Fact]
+    public void Create_ShouldThrowPurchaseNotFoundException_WhenPurchaseDoesNotExist()
+    {
+      var productId = Guid.NewGuid();
+      var purchaseId = Guid.NewGuid();
+
+      _mockProductRepository.Setup(repo => repo.FindById(productId)).Returns(new Product("TestProduct", 10.0f));
+      _mockPurchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns((Purchase)null);
+
+      Assert.Throws<PurchaseNotFoundException>(() => _cartService.Create(productId, purchaseId));
+    }
+
+    [Fact]
+    public void IncrementProductQuantity_ShouldThrowCartNotFoundException_WhenCartDoesNotExist()
+    {
+      var cartId = Guid.NewGuid();
+
+      _mockCartRepository.Setup(repo => repo.FindById(cartId)).Returns((Cart)null);
+
+      Assert.Throws<CartNotFoundException>(() => _cartService.IncrementProductQuantity(cartId));
+    }
+
+    [Fact]
+    public void DecrementProductQuantity_ShouldThrowCartNotFoundException_WhenCartDoesNotExist()
+    {
+      var cartId = Guid.NewGuid();
+
+      _mockCartRepository.Setup(repo => repo.FindById(cartId)).Returns((Cart)null);
+
+      Assert.Throws<CartNotFoundException>(() => _cartService.DecrementProductQuantity(cartId));
+    }
+
+    [Fact]
+    public void DecrementProductQuantity_ShouldThrowCartQuantityIsZeroException_WhenCartQuantityIsZero()
+    {
+      var cartId = Guid.NewGuid();
+      var cart = new Cart(Guid.NewGuid(), Guid.NewGuid(), 0);
+
+      _mockCartRepository.Setup(repo => repo.FindById(cartId)).Returns(cart);
+
+      Assert.Throws<CartQuantityIsZeroException>(() => _cartService.DecrementProductQuantity(cartId));
     }
   }
 }

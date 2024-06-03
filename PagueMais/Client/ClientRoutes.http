@@ -13,10 +13,10 @@ POST {{PagueMais_HostAddress}}/api/v1/clients
 Content-Type: application/json
 
 {
-  "Name": "Teste",
-  "Email": "email@email.com",
-  "Cpf": "431.926.450-91",
-  "Phone": "8499",
+  "Name": "Rodolfo",
+  "Email": "rodolfo@email.com",
+  "Cpf": "581.500.190-22",
+  "Phone": "849954",
   "BirthDate": "2023-05-25T15:30:00Z"
 }
 
