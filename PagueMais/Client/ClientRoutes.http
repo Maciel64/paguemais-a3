@@ -5,7 +5,7 @@ GET {{PagueMais_HostAddress}}/api/v1/clients
 Accept: application/json
 
 ### Selecionar Cliente pelo ID
-GET {{PagueMais_HostAddress}}/api/v1/clients/  ID
+GET {{PagueMais_HostAddress}}/api/v1/clients/2c21a72a-2f04-4390-a678-19ff41e9f794
 Content-Type: application/json
 
 ###Adicionar Clientes

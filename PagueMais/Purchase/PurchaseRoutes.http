@@ -5,7 +5,7 @@ GET {{PagueMais_HostAddress}}/api/v1/purchases
 Accept: application/json
 
 ### Selecionar Cliente pelo ID
-GET {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+GET {{PagueMais_HostAddress}}/api/v1/purchases/2c01ef49-3742-4351-9457-a4baa3d276bb
 Content-Type: application/json
 
 ###Adicionar Clientes

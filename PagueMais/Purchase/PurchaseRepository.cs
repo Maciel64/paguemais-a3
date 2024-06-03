@@ -26,7 +26,10 @@ namespace Repositories
     //Método para achar Compra pelo ID
     public Purchase? FindById(Guid id)
     {
-      return _context.Purchases.Find(id);
+      return _context.Purchases
+        .Include(p => p.Client)
+        .Include(p => p.Carts)
+        .FirstOrDefault(p => p.Id == id);
     }
 
     //Método para Remover a Compra

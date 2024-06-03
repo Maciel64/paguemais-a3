@@ -1,5 +1,3 @@
-using System.Data;
-using System.Runtime.InteropServices;
 using Entities;
 using Exceptions;
 using Repositories;
@@ -7,11 +5,10 @@ using Repositories;
 
 namespace Services
 {
-  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository, CartRepository cartRepository)
+  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository)
   {
     private readonly PurchaseRepository _purchaseRepository = purchaseRepository;
     private readonly ClientRepository _clientRepository = clientRepository;
-    private readonly CartRepository _cartRepository = cartRepository;
 
     public IEnumerable<Purchase> GetAll()
     {

@@ -26,7 +26,9 @@ namespace Repositories
     //Método para achar Cliente pelo ID
     public Client? FindById(Guid id)
     {
-      return _context.Clients.Find(id);
+      return _context.Clients
+        .Include(c => c.Purchases)
+        .FirstOrDefault(c => c.Id == id);
     }
 
     //Método para Remover o Cliente

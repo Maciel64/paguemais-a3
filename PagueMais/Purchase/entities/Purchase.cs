@@ -36,7 +36,7 @@ namespace Entities
         [Key]
         public Guid Id { get; set; } = new();
         public float Total { get; set; }
-        public EnumMethods PaymentMethod { get; set; }
+        public EnumMethods? PaymentMethod { get; set; }
         public EnumStatus Status { get; set; } = EnumStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? FinishedAt { get; set; }
