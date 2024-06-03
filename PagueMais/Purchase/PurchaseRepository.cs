@@ -4,7 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
-  public class PurchaseRepository(Database context)
+  public interface IPurchaseRepository
+  {
+    public IEnumerable<Purchase> GetAll();
+    public Purchase Create(Purchase purchase);
+    public Purchase? FindById(Guid id);
+    public void Remove(Purchase purchase);
+    public void Update(Purchase purchase);
+  }
+
+  public class PurchaseRepository(Database context) : IPurchaseRepository
   {
     private readonly Database _context = context;
 

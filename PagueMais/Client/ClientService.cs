@@ -6,17 +6,17 @@ using Repositories;
 
 namespace Services
 {
-  public class ClientService(ClientRepository produtoRepository)
+  public class ClientService(IClientRepository clientRepository)
   {
-    private readonly ClientRepository _clientRepository = produtoRepository;
+    private readonly IClientRepository _clientRepository = clientRepository;
 
-    public async Task<IEnumerable<Client>> GetAllAsync()
+    public IEnumerable<Client> GetAll()
     {
-      return await _clientRepository.GetAllAsync();
+      return _clientRepository.GetAll();
     }
 
     //Adicionar usuário//
-    public async Task<Client> CreateAsync(Client client)
+    public Client Create(Client client)
     {
       //Verificar se a data é válida
       ValidateClientAge(client.BirthDate);
@@ -36,7 +36,7 @@ namespace Services
       }
 
       //Teste para ver se o Email se repete
-      var registeredClientEmail = await _clientRepository.FindByEmail(client.Email);
+      var registeredClientEmail = _clientRepository.FindByEmail(client.Email);
 
       if (registeredClientEmail is not null)
       {
@@ -44,25 +44,25 @@ namespace Services
       }
 
       //Teste para ver se o Phone se repete
-      var registeredClientPhone = await _clientRepository.FindByPhone(client.Phone);
+      var registeredClientPhone = _clientRepository.FindByPhone(client.Phone);
 
       if (registeredClientPhone is not null)
       {
         throw new ClientPhoneAlreadyRegisteredException();
       }
 
-      return await _clientRepository.CreateAsync(client);
+      return _clientRepository.Create(client);
     }
 
     //Remover Usuário//
-    public void RemoveAsync(Guid clientId)
+    public void Remove(Guid clientId)
     {
       var client = _clientRepository.FindById(clientId) ?? throw new ClientNotFoundException();
-      _clientRepository.RemoveAsync(client);
+      _clientRepository.Remove(client);
     }
 
     //Editar Usuário//
-    public async Task UpdateAsync(Guid clientId, UpdateClientDTO updatedClient)
+    public void Update(Guid clientId, UpdateClientDTO updatedClient)
     {
 
       //Verificar se ID existe
@@ -77,7 +77,7 @@ namespace Services
       //Atualiza CPF caso o não seja igual a de outro cliente, seja válido e não vazio
       if (updatedClient.Cpf != "")
       {
-        var clientWithCpf = await _clientRepository.FindByCpfAsync(updatedClient.Cpf);
+        var clientWithCpf = _clientRepository.FindByCpf(updatedClient.Cpf);
         if (clientWithCpf != null && clientWithCpf.Id != clientId)
           throw new ClientCpfAlreadyExistsException();
 
@@ -92,7 +92,7 @@ namespace Services
       if (updatedClient.Email != "")
       {
 
-        var clientWithEmail = await _clientRepository.FindByEmailAsync(updatedClient.Email);
+        var clientWithEmail = _clientRepository.FindByEmail(updatedClient.Email);
         if (clientWithEmail != null && clientWithEmail.Id != clientId)
           throw new ClientEmailAlreadyExistsException();
         existingClient.Email = updatedClient.Email;
@@ -102,7 +102,7 @@ namespace Services
       if (updatedClient.Phone != 0)
       {
         //Verificar se o novo telefone já está em uso por outro cliente
-        var clientWithPhone = await _clientRepository.FindByPhoneAsync(updatedClient.Phone);
+        var clientWithPhone = _clientRepository.FindByPhone(updatedClient.Phone);
         if (clientWithPhone != null && clientWithPhone.Id != clientId)
           throw new ClientPhoneAlreadyExistsException();
         existingClient.Phone = updatedClient.Phone;
@@ -116,7 +116,7 @@ namespace Services
         existingClient.BirthDate = updatedClient.BirthDate;
       }
 
-      await _clientRepository.UpdateAsync(existingClient);
+      _clientRepository.Update(existingClient);
     }
 
     //Método para achar o Cliente pelo ID

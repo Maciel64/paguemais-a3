@@ -3,6 +3,7 @@ using Entities;
 
 namespace Repositories
 {
+  // Design Pattern | Abstract Factory
   public interface IProductRepository
   {
     public IEnumerable<Product> GetAll();

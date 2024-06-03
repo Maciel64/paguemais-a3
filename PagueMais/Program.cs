@@ -12,17 +12,17 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<Database>();
 
-builder.Services.AddScoped<ClientRepository>();
 builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddScoped<PurchaseService>();
-builder.Services.AddScoped<PurchaseRepository>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
 builder.Services.AddScoped<CartService>();
-builder.Services.AddScoped<CartRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddCors(options =>
     {

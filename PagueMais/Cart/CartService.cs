@@ -4,10 +4,10 @@ using Repositories;
 
 namespace Services
 {
-  public class CartService(CartRepository cartRepository, PurchaseRepository purchaseRepository, IProductRepository productRepository)
+  public class CartService(ICartRepository cartRepository, IPurchaseRepository purchaseRepository, IProductRepository productRepository)
   {
-    private readonly CartRepository _cartRepository = cartRepository;
-    private readonly PurchaseRepository _purchaseRepository = purchaseRepository;
+    private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly IPurchaseRepository _purchaseRepository = purchaseRepository;
     private readonly IProductRepository _productRepository = productRepository;
 
     public Cart Create(Guid ProductId, Guid PurchaseId)

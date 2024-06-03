@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Config
 {
+  // Design Pattern | Singleton
   public class Database : DbContext
   {
     public DbSet<Client> Clients { get; set; }

@@ -4,6 +4,7 @@ using Services;
 
 namespace Controllers
 {
+  // Design Pattern | Decorators
   [ApiController]
   [Route("/api/v1/carts")]
   public class CartController(CartService cartService) : ControllerBase

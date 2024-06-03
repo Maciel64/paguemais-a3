@@ -4,21 +4,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
-  public class ClientRepository(Database context)
+  public interface IClientRepository
+  {
+    public IEnumerable<Client> GetAll();
+    public Client Create(Client client);
+    public Client? FindById(Guid id);
+    public Client? FindByCpf(string cpf);
+    public Client? FindByEmail(string email);
+    public Client? FindByPhone(int phone);
+    public void Update(Client client);
+    public void Remove(Client client);
+  }
+
+  public class ClientRepository(Database context) : IClientRepository
   {
     private readonly Database _context = context;
 
     //Método para printar todos os Clientes
-    public async Task<IEnumerable<Client>> GetAllAsync()
+    public IEnumerable<Client> GetAll()
     {
-      return await _context.Clients.ToListAsync();
+      return [.. _context.Clients];
     }
 
     //Método para criar Clientes
-    public async Task<Client> CreateAsync(Client client)
+    public Client Create(Client client)
     {
       _context.Clients.Add(client);
-      await _context.SaveChangesAsync();
+      _context.SaveChanges();
 
       return client;
     }
@@ -32,54 +44,35 @@ namespace Repositories
     }
 
     //Método para Remover o Cliente
-    public async Task RemoveAsync(Client client)
+    public void Remove(Client client)
     {
       _context.Clients.Remove(client);
-      await _context.SaveChangesAsync();
+      _context.SaveChanges();
     }
 
     //Método para achar Cliente pelo CPF
-    public async Task<Client?> FindByCpfAsync(string cpf)
+    public Client? FindByCpf(string cpf)
     {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Cpf == cpf);
+      return _context.Clients.FirstOrDefault(client => client.Cpf == cpf);
     }
 
     //Método para achar Cliente pelo Email
-    public async Task<Client?> FindByEmailAsync(string email)
+    public Client? FindByEmail(string email)
     {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Email == email);
+      return _context.Clients.FirstOrDefault(client => client.Email == email);
     }
 
     //Método para achar Cliente pelo Telefone
-    public async Task<Client?> FindByPhoneAsync(int phone)
+    public Client? FindByPhone(int phone)
     {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Phone == phone);
+      return _context.Clients.FirstOrDefault(client => client.Phone == phone);
     }
 
     //Método para Editar Cliente
-    public async Task UpdateAsync(Client client)
+    public void Update(Client client)
     {
       _context.Clients.Update(client);
-      await _context.SaveChangesAsync();
+      _context.SaveChanges();
     }
-
-    //Método para achar Cliente pelo CPF
-    public Client? FindByCpf(string Cpf)
-    {
-      return _context.Clients.FirstOrDefault(client => client.Cpf == Cpf);
-    }
-
-    //Método para achar Cliente pelo Email
-    public async Task<Client?> FindByEmail(string Email)
-    {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Email == Email);
-    }
-
-    //Método para achar Cliente pelo Phone
-    public async Task<Client?> FindByPhone(int Phone)
-    {
-      return await _context.Clients.FirstOrDefaultAsync(client => client.Phone == Phone);
-    }
-
   }
 }

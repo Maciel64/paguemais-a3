@@ -5,10 +5,10 @@ using Repositories;
 
 namespace Services
 {
-  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository)
+  public class PurchaseService(IPurchaseRepository purchaseRepository, IClientRepository clientRepository)
   {
-    private readonly PurchaseRepository _purchaseRepository = purchaseRepository;
-    private readonly ClientRepository _clientRepository = clientRepository;
+    private readonly IPurchaseRepository _purchaseRepository = purchaseRepository;
+    private readonly IClientRepository _clientRepository = clientRepository;
 
     public IEnumerable<Purchase> GetAll()
     {

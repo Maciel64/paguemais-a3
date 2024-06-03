@@ -3,7 +3,16 @@ using Entities;
 
 namespace Repositories
 {
-  public class CartRepository
+  public interface ICartRepository
+  {
+    public void Create(Cart cart);
+    public void Update(Cart cart);
+    public Cart? FindById(Guid Id);
+    public Cart? FindByProductId(Guid ProductId);
+    public Cart? FindByProductAndPurchaseId(Guid ProductId, Guid PurchaseId);
+  }
+
+  public class CartRepository : ICartRepository
   {
     public Database _context = new();
 

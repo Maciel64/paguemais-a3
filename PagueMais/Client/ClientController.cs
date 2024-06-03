@@ -14,20 +14,20 @@ namespace Controllers
 
     //Método para printar todos os Clientes
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Client>>> GetClients()
+    public ActionResult<IEnumerable<Client>> GetClients()
     {
-      var produtos = await _clientService.GetAllAsync();
+      var produtos = _clientService.GetAll();
       return Ok(produtos);
     }
 
     //Método para criar um novo cliente
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<Client>>> CreateClient([FromBody] Client client)
+    public ActionResult<IEnumerable<Client>> CreateClient([FromBody] Client client)
     {
       try
       {
         //Cria novo Cliente
-        await _clientService.CreateAsync(client);
+        _clientService.Create(client);
         return Ok(client);
       }
 
@@ -75,7 +75,7 @@ namespace Controllers
       try
       {
         //Deleta o Cliente
-        _clientService.RemoveAsync(id);
+        _clientService.Remove(id);
         return NoContent();
       }
 
@@ -88,12 +88,12 @@ namespace Controllers
 
     //Método para Editar Cliente
     [HttpPut("{Id}")]
-    public async Task<IActionResult> UpdateClient(Guid id, [FromBody] UpdateClientDTO client)
+    public IActionResult UpdateClient(Guid id, [FromBody] UpdateClientDTO client)
     {
       try
       {
         //Atualiza o Cliente
-        await _clientService.UpdateAsync(id, client);
+        _clientService.Update(id, client);
 
         //Busca Cliente atualizado
         var updatedClient = _clientService.GetClientById(id);
