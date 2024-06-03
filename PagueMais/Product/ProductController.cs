@@ -25,12 +25,12 @@ namespace Controllers
     {
       try
       {
-        //Cria novo Cliente
+        //Cria novo Produto
         _productService.Create(product);
         return Ok(product);
       }
 
-      //Retorno de ERRO caso CPF já exista
+
       catch (Exception e)
       {
         return UnprocessableEntity(e.Message);
