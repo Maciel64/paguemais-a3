@@ -7,10 +7,11 @@ using Repositories;
 
 namespace Services
 {
-  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository)
+  public class PurchaseService(PurchaseRepository purchaseRepository, ClientRepository clientRepository, CartRepository cartRepository)
   {
     private readonly PurchaseRepository _purchaseRepository = purchaseRepository;
     private readonly ClientRepository _clientRepository = clientRepository;
+    private readonly CartRepository _cartRepository = cartRepository;
 
     public IEnumerable<Purchase> GetAll()
     {

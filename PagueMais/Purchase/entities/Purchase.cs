@@ -41,8 +41,11 @@ namespace Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? FinishedAt { get; set; }
         public DateTime? UpdatedAt { get; set; } = null;
+
         [ForeignKey("Client")]
         public Guid ClientId { get; set; }
         public Client? Client { get; set; }
+
+        public IEnumerable<Cart>? Carts { get; set; }
     }
 }

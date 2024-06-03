@@ -1,0 +1,20 @@
+@PagueMais_HostAddress = http://localhost:5151
+
+###Mostrar Todos os Clientes
+GET {{PagueMais_HostAddress}}/api/v1/carts/increment/39567cfa-9e8d-4428-a8db-f49040d39a88
+Accept: application/json
+
+### Selecionar Cliente pelo ID
+GET {{PagueMais_HostAddress}}/api/v1/carts/decrement/39567cfa-9e8d-4428-a8db-f49040d39a88
+Content-Type: application/json
+
+###
+
+POST {{PagueMais_HostAddress}}/api/v1/carts
+Content-Type: application/json
+
+{
+  "productId": "9435570c-185b-4866-b674-d34316a6adde",
+  "purchaseId": "2c01ef49-3742-4351-9457-a4baa3d276bb",
+  "quantity": 1
+}
