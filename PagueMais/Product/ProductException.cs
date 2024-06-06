@@ -9,4 +9,8 @@ namespace Exceptions
   {
     public ProductNotFoundException() : base("The requested product was not found") { }
   }
+  public class ProductInUseExeption : Exception
+  {
+    public ProductInUseExeption() : base("The requested product is in use") { }
+  }
 }

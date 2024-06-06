@@ -5,7 +5,7 @@ GET {{PagueMais_HostAddress}}/api/v1/clients
 Accept: application/json
 
 ### Selecionar Cliente pelo ID
-GET {{PagueMais_HostAddress}}/api/v1/clients/2c21a72a-2f04-4390-a678-19ff41e9f794
+GET {{PagueMais_HostAddress}}/api/v1/clients/ClientId
 Content-Type: application/json
 
 ###Adicionar Clientes
@@ -21,11 +21,11 @@ Content-Type: application/json
 }
 
 ###Deletar Clientes
-DELETE {{PagueMais_HostAddress}}/api/v1/clients/  ID
+DELETE {{PagueMais_HostAddress}}/api/v1/clients/ClientID
 Content-Type: application/json
 
 ###Editar Clientes
-PUT {{PagueMais_HostAddress}}/api/v1/clients/2f135d3f-3357-462e-9d45-f79b9287026a
+PUT {{PagueMais_HostAddress}}/api/v1/clients/ClientId
 Content-Type: application/json
 
 {

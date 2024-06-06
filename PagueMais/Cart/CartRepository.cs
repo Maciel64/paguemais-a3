@@ -9,6 +9,8 @@ namespace Repositories
   {
     public void Create(Cart cart);
     public void Update(Cart cart);
+    public void Remove(Cart cart);
+    public void RemoveAll(IEnumerable<Cart> carts);
     public Cart? FindById(Guid Id);
     public Cart? FindByProductId(Guid ProductId);
     public Cart? FindByProductAndPurchaseId(Guid ProductId, Guid PurchaseId);
@@ -30,6 +32,18 @@ namespace Repositories
     public void Update(Cart cart)
     {
       _context.Carts.Update(cart);
+      _context.SaveChanges();
+    }
+
+    public void Remove(Cart cart)
+    {
+      _context.Carts.Remove(cart);
+      _context.SaveChanges();
+    }
+
+    public void RemoveAll(IEnumerable<Cart> carts)
+    {
+      _context.Carts.RemoveRange(carts);
       _context.SaveChanges();
     }
 
