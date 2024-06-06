@@ -85,8 +85,8 @@ namespace Tests
       {
         Id = purchaseId,
       };
-      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
 
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
       _purchaseService.Remove(purchaseId);
 
       _purchaseRepository.Verify(repo => repo.Remove(purchase), Times.Once);

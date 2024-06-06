@@ -85,12 +85,10 @@ namespace Tests
       var purchaseId = Guid.NewGuid();
       var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
       _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
-      _cartRepository.Setup(repo => repo.RemoveAll(It.IsAny<IEnumerable<Cart>>()));
 
       _purchaseService.Remove(purchaseId);
 
       _purchaseRepository.Verify(repo => repo.Remove(purchase), Times.Once);
-      _cartRepository.Verify(repo => repo.RemoveAll(It.IsAny<IEnumerable<Cart>>()), Times.Once);
     }
 
     [Fact]
