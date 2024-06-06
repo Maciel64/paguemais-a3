@@ -33,10 +33,10 @@ namespace Services
       }
 
       var cart = new Cart(product.Id, purchase.Id, 1);
-      _cartRepository.Create(cart);
       purchase.Total += product.Price;
+
       _purchaseRepository.Update(purchase);
-      return cart;
+      return _cartRepository.Create(cart); ;
     }
 
     //Aumentar produto de um Cart

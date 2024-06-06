@@ -75,7 +75,7 @@ namespace Services
     //Método para achar a compra pelo ID
     public Purchase? GetPurchaseById(Guid purchaseId)
     {
-      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new Exception();
+      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new PurchaseNotFoundException();
       return purchase;
     }
   }

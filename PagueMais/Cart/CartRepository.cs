@@ -1,13 +1,11 @@
 using Config;
 using Entities;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Repositories
 {
   public interface ICartRepository
   {
-    public void Create(Cart cart);
+    public Cart Create(Cart cart);
     public void Update(Cart cart);
     public void Remove(Cart cart);
     public void RemoveAll(IEnumerable<Cart> carts);
@@ -22,10 +20,12 @@ namespace Repositories
     public Database _context = new();
 
     //Criar Cart
-    public void Create(Cart cart)
+    public Cart Create(Cart cart)
     {
       _context.Carts.Add(cart);
       _context.SaveChanges();
+
+      return cart;
     }
 
     //Editar Cart
