@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Entities;
 using Exceptions;
 using Repositories;
@@ -32,15 +33,21 @@ namespace Services
       }
 
       var cart = new Cart(product.Id, purchase.Id, 1);
-      _cartRepository.Create(cart);
-      return cart;
+      purchase.Total += product.Price;
+
+      _purchaseRepository.Update(purchase);
+      return _cartRepository.Create(cart); ;
     }
 
     //Aumentar produto de um Cart
     public void IncrementProductQuantity(Guid Id)
     {
       var cart = _cartRepository.FindById(Id) ?? throw new CartNotFoundException();
+      var purchase = _purchaseRepository.FindById(cart.PurchaseId) ?? throw new PurchaseNotFoundException();
+      var product = _productRepository.FindById(cart.ProductId) ?? throw new ProductNotFoundException();
       cart.Quantity += 1;
+      purchase.Total += product.Price;
+      _purchaseRepository.Update(purchase);
       _cartRepository.Update(cart);
     }
 
@@ -48,13 +55,19 @@ namespace Services
     public void DecrementProductQuantity(Guid Id)
     {
       var cart = _cartRepository.FindById(Id) ?? throw new CartNotFoundException();
+      var purchase = _purchaseRepository.FindById(cart.PurchaseId) ?? throw new PurchaseNotFoundException();
+      var product = _productRepository.FindById(cart.ProductId) ?? throw new ProductNotFoundException();
+
+      cart.Quantity -= 1;
 
       if (cart.Quantity == 0)
       {
-        throw new CartQuantityIsZeroException();
+        RemoveProductFromCart(cart.Id);
+        return;
       }
 
-      cart.Quantity -= 1;
+      purchase.Total -= product.Price;
+      _purchaseRepository.Update(purchase);
       _cartRepository.Update(cart);
     }
 
@@ -62,8 +75,12 @@ namespace Services
     public void RemoveProductFromCart(Guid Id)
     {
       var cart = _cartRepository.FindById(Id) ?? throw new CartNotFoundException();
-      cart.Quantity = 0;
-      _cartRepository.Update(cart);
+      var purchase = _purchaseRepository.FindById(cart.PurchaseId) ?? throw new PurchaseNotFoundException();
+      var product = _productRepository.FindById(cart.ProductId) ?? throw new ProductNotFoundException();
+
+      purchase.Total -= product.Price * cart.Quantity;
+      _purchaseRepository.Update(purchase);
+      _cartRepository.Remove(cart);
     }
 
     public IEnumerable<Cart> GetAllCarts()

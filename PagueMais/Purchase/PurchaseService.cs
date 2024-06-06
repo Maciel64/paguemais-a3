@@ -5,10 +5,12 @@ using Repositories;
 
 namespace Services
 {
-  public class PurchaseService(IPurchaseRepository purchaseRepository, IClientRepository clientRepository)
+  public class PurchaseService(IPurchaseRepository purchaseRepository, IClientRepository clientRepository, ICartRepository cartRepository)
   {
     private readonly IPurchaseRepository _purchaseRepository = purchaseRepository;
     private readonly IClientRepository _clientRepository = clientRepository;
+    private readonly ICartRepository _cartRepository = cartRepository;
+
 
     public IEnumerable<Purchase> GetAll()
     {
@@ -32,6 +34,12 @@ namespace Services
     public void Remove(Guid purchaseId)
     {
       var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new PurchaseNotFoundException();
+
+      if (purchase.Carts is not null)
+      {
+        _cartRepository.RemoveAll(purchase.Carts);
+      }
+
       _purchaseRepository.Remove(purchase);
     }
 
@@ -67,7 +75,7 @@ namespace Services
     //Método para achar a compra pelo ID
     public Purchase? GetPurchaseById(Guid purchaseId)
     {
-      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new Exception();
+      var purchase = _purchaseRepository.FindById(purchaseId) ?? throw new PurchaseNotFoundException();
       return purchase;
     }
   }

@@ -1,191 +1,152 @@
+using System;
+using System.Collections.Generic;
 using Entities;
 using Exceptions;
 using Moq;
 using Repositories;
 using Services;
+using Xunit;
 
 namespace Tests
 {
-  public class ProductServiceTest
+  public class PurchaseServiceTests
   {
-    private readonly Mock<IProductRepository> _productRepository;
-    private readonly ProductService _productService;
+    private readonly Mock<IPurchaseRepository> _purchaseRepository;
+    private readonly Mock<IClientRepository> _clientRepository;
+    private readonly Mock<ICartRepository> _cartRepository;
+    private readonly PurchaseService _purchaseService;
 
-    public ProductServiceTest()
+    public PurchaseServiceTests()
     {
-      _productRepository = new Mock<IProductRepository>();
-      _productService = new ProductService(_productRepository.Object);
-    }
-
-
-    [Fact]
-    public void ShouldGetAllProducts()
-    {
-      var mockProducts = new List<Product> {
-        new("Produto 1", 10),
-        new("Produto 2", 23)
-      };
-
-      _productRepository.Setup(repo => repo.GetAll()).Returns(mockProducts);
-
-      var products = _productService.GetAll();
-
-      Assert.IsType<List<Product>>(products);
-      Assert.Equal(mockProducts[0].Name, products.ToList()[0].Name);
-      Assert.Equal(mockProducts[1].Name, products.ToList()[1].Name);
-      Assert.Equal(mockProducts[0].Price, products.ToList()[0].Price);
-      Assert.Equal(mockProducts[1].Price, products.ToList()[1].Price);
-
-      _productRepository.Verify(repo => repo.GetAll(), Times.Once);
-    }
-
-
-    [Fact]
-    public void ShouldGetOneProductById()
-    {
-      var product = new Product("Mock", 10);
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns(product);
-
-      var foundProduct = _productService.GetById(product.Id);
-
-      Assert.Equal(product.Id, foundProduct.Id);
-      Assert.Equal(product.Name, foundProduct.Name);
-      Assert.Equal(product.Price, foundProduct.Price);
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-    }
-
-
-    [Fact]
-    public void ShouldNotGetOneProductByUnexistentId()
-    {
-      var product = new Product("Mock", 10);
-
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns((Guid id) => null);
-
-      Assert.Throws<ProductNotFoundException>(() => _productService.GetById(product.Id));
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-    }
-
-
-    [Fact]
-    public void ShouldBeAbleToCreateProduct()
-    {
-      var product = new Product("Test Product", 0);
-
-      _productRepository.Setup(repo => repo.Create(product)).Returns(product);
-
-      var newProduct = _productService.Create(product);
-
-      Assert.Equal("Test Product", newProduct.Name);
-      Assert.Equal(0, newProduct.Price);
-
-      _productRepository.Verify(repo => repo.Create(product), Times.Once);
-    }
-
-
-    [Theory]
-    [InlineData(-10)]
-    public void ShouldNotBeAbleToCreateProductWithInvalidData(float Price)
-    {
-      var product = new Product("Test Product", Price);
-
-      Assert.Throws<ProductPriceIsInvalidException>(() => _productService.Create(product));
-
-      _productRepository.Verify(repo => repo.Create(product), Times.Never);
+      _purchaseRepository = new Mock<IPurchaseRepository>();
+      _clientRepository = new Mock<IClientRepository>();
+      _cartRepository = new Mock<ICartRepository>();
+      _purchaseService = new PurchaseService(_purchaseRepository.Object, _clientRepository.Object, _cartRepository.Object);
     }
 
     [Fact]
-    public void ShouldBeAbleToUpdateProduct()
+    public void GetAll_ShouldReturnAllPurchases()
     {
-      var product = new Product("Test Product", 10);
+      var purchases = new List<Purchase>
+            {
+                new Purchase(100, EnumMethods.Credit, Guid.NewGuid()),
+                new Purchase(200, EnumMethods.Debit, Guid.NewGuid())
+            };
+      _purchaseRepository.Setup(repo => repo.GetAll()).Returns(purchases);
 
-      UpdateProductDTO dto = new()
-      {
-        Name = "Novo nome",
-        Price = 12
-      };
+      var result = _purchaseService.GetAll();
 
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns(product);
-      _productRepository.Setup(repo => repo.Update(product));
-
-      var updatedProduct = _productService.Update(product.Id, dto);
-
-      Assert.Equal(updatedProduct.Name, dto.Name);
-      Assert.Equal(updatedProduct.Price, dto.Price);
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-      _productRepository.Verify(repo => repo.Update(It.IsAny<Product>()), Times.Once);
+      Assert.Equal(purchases, result);
     }
 
     [Fact]
-    public void ShouldNotBeAbleToUpdateProductToNegativePrice()
+    public void Create_ShouldThrowException_WhenClientNotFound()
     {
-      var product = new Product("Test Product", 10);
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
+      _clientRepository.Setup(repo => repo.FindById(purchase.ClientId)).Returns((Client)null);
 
-      UpdateProductDTO dto = new()
-      {
-        Name = "Novo nome",
-        Price = -1
-      };
-
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns(product);
-      _productRepository.Setup(repo => repo.Update(product));
-
-      Assert.Throws<ProductPriceIsInvalidException>(() => _productService.Update(product.Id, dto));
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-      _productRepository.Verify(repo => repo.Update(It.IsAny<Product>()), Times.Never);
+      Assert.Throws<ClientNotFoundException>(() => _purchaseService.Create(purchase));
     }
 
     [Fact]
-    public void ShouldNotBeAbleToUpdateProductWithInexistentId()
+    public void Create_ShouldThrowException_WhenTotalIsInvalid()
     {
-      var product = new Product("Test Product", 10);
+      var purchase = new Purchase(-100, EnumMethods.Credit, Guid.NewGuid());
+      _clientRepository.Setup(repo => repo.FindById(purchase.ClientId)).Returns(new Client("Test Client", "12345678901", "test@test.com", 1234567890, DateTime.UtcNow));
 
-      UpdateProductDTO dto = new()
-      {
-        Name = "Novo nome",
-        Price = 10
-      };
-
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns((Guid Id) => null);
-      _productRepository.Setup(repo => repo.Update(product));
-
-
-      Assert.Throws<ProductNotFoundException>(() => _productService.Update(product.Id, dto));
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-      _productRepository.Verify(repo => repo.Update(It.IsAny<Product>()), Times.Never);
+      Assert.Throws<PurchaseTotalIsInvalidException>(() => _purchaseService.Create(purchase));
     }
 
     [Fact]
-    public void ShouldBeAbleToDeleteProduct()
+    public void Create_ShouldReturnPurchase_WhenValid()
     {
-      var product = new Product("Test Product", 10);
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
+      _clientRepository.Setup(repo => repo.FindById(purchase.ClientId)).Returns(new Client("Test Client", "12345678901", "test@test.com", 1234567890, DateTime.UtcNow));
+      _purchaseRepository.Setup(repo => repo.Create(purchase)).Returns(purchase);
 
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns(product);
-      _productRepository.Setup(repo => repo.Remove(product));
+      var result = _purchaseService.Create(purchase);
 
-      _productService.Remove(product.Id);
-
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-      _productRepository.Verify(repo => repo.Remove(It.IsAny<Product>()), Times.Once);
+      Assert.Equal(purchase, result);
+      _purchaseRepository.Verify(repo => repo.Create(purchase), Times.Once);
     }
 
     [Fact]
-    public void ShouldNotBeAbleToDeleteProductWithInexistentId()
+    public void Remove_ShouldThrowException_WhenPurchaseNotFound()
     {
-      var product = new Product("Test Product", 10);
+      var purchaseId = Guid.NewGuid();
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns((Purchase)null);
 
-      _productRepository.Setup(repo => repo.FindById(product.Id)).Returns((Guid Id) => null);
-      _productRepository.Setup(repo => repo.Remove(product));
+      Assert.Throws<PurchaseNotFoundException>(() => _purchaseService.Remove(purchaseId));
+    }
 
-      Assert.Throws<ProductNotFoundException>(() => _productService.Remove(product.Id));
+    [Fact]
+    public void Remove_ShouldRemovePurchase_WhenValid()
+    {
+      var purchaseId = Guid.NewGuid();
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
 
-      _productRepository.Verify(repo => repo.FindById(product.Id), Times.Once);
-      _productRepository.Verify(repo => repo.Remove(product), Times.Never);
+      _purchaseService.Remove(purchaseId);
+
+      _purchaseRepository.Verify(repo => repo.Remove(purchase), Times.Once);
+    }
+
+    [Fact]
+    public void Update_ShouldThrowException_WhenPurchaseNotFound()
+    {
+      var purchaseId = Guid.NewGuid();
+      var updatedPurchase = new UpdatePurchaseDTO { Total = 150, PaymentMethod = EnumMethods.Debit, Status = EnumStatus.Completed };
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns((Purchase)null);
+
+      Assert.Throws<PurchaseNotFoundException>(() => _purchaseService.Update(purchaseId, updatedPurchase));
+    }
+
+    [Fact]
+    public void Update_ShouldThrowException_WhenTotalIsInvalid()
+    {
+      var purchaseId = Guid.NewGuid();
+      var updatedPurchase = new UpdatePurchaseDTO { Total = -150 };
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
+
+      Assert.Throws<PurchaseTotalIsInvalidException>(() => _purchaseService.Update(purchaseId, updatedPurchase));
+    }
+
+    [Fact]
+    public void Update_ShouldUpdatePurchase_WhenValid()
+    {
+      var purchaseId = Guid.NewGuid();
+      var updatedPurchase = new UpdatePurchaseDTO { Total = 150, PaymentMethod = EnumMethods.Debit, Status = EnumStatus.Completed };
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid()) { Id = purchaseId };
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
+
+      _purchaseService.Update(purchaseId, updatedPurchase);
+
+      Assert.Equal(150, purchase.Total);
+      Assert.Equal(EnumMethods.Debit, purchase.PaymentMethod);
+      Assert.Equal(EnumStatus.Completed, purchase.Status);
+      _purchaseRepository.Verify(repo => repo.Update(purchase), Times.Once);
+    }
+
+    [Fact]
+    public void GetPurchaseById_ShouldThrowException_WhenPurchaseNotFound()
+    {
+      var purchaseId = Guid.NewGuid();
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns((Purchase)null);
+
+      Assert.Throws<PurchaseNotFoundException>(() => _purchaseService.GetPurchaseById(purchaseId));
+    }
+
+    [Fact]
+    public void GetPurchaseById_ShouldReturnPurchase_WhenValid()
+    {
+      var purchaseId = Guid.NewGuid();
+      var purchase = new Purchase(100, EnumMethods.Credit, Guid.NewGuid());
+      _purchaseRepository.Setup(repo => repo.FindById(purchaseId)).Returns(purchase);
+
+      var result = _purchaseService.GetPurchaseById(purchaseId);
+
+      Assert.Equal(purchase, result);
     }
   }
 }

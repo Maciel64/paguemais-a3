@@ -8,15 +8,15 @@ POST {{PagueMais_HostAddress}}/api/v1/carts
 Content-Type: application/json
 
 {
-  "productId": "412ef2bf-d2a6-4c1c-911d-f56cc3161878",
-  "purchaseId": "f26ed91e-8515-40ff-97c5-6e821b2ed7c0"
+  "productId": "9496ed20-6ba2-4288-94d3-1bbaabd14f47",
+  "purchaseId": "2afcba5a-d32b-482d-8f01-790953c1a41e"
 }
 
 ### Incrementar Quantidade do Produto no Carrinho
-GET {{PagueMais_HostAddress}}/api/v1/carts/increment/5285a710-a6c0-4857-826c-1257d91c56b0
+GET {{PagueMais_HostAddress}}/api/v1/carts/increment/CartID
 
 ### Decrementar Quantidade do Produto no Carrinho
-GET {{PagueMais_HostAddress}}/api/v1/carts/decrement/CartGUID
+GET {{PagueMais_HostAddress}}/api/v1/carts/decrement/CartID
 
 ### Remover Produto do Carrinho
-DELETE GET {{PagueMais_HostAddress}}/api/v1/carts/remove/CartGUID
+DELETE {{PagueMais_HostAddress}}/api/v1/carts/remove/CartID

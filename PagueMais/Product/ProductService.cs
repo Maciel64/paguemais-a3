@@ -4,9 +4,11 @@ using Repositories;
 
 namespace Services
 {
-  public class ProductService(IProductRepository productRepository)
+  public class ProductService(IProductRepository productRepository, ICartRepository cartRepository)
   {
     private readonly IProductRepository _productRepository = productRepository;
+    private readonly ICartRepository _cartRepository = cartRepository;
+
 
     public IEnumerable<Product> GetAll()
     {
@@ -34,6 +36,13 @@ namespace Services
     public void Remove(Guid productId)
     {
       var product = _productRepository.FindById(productId) ?? throw new ProductNotFoundException();
+      var cart = _cartRepository.FindByProductId(productId);
+
+      if (cart is not null)
+      {
+        throw new ProductInUseExeption();
+      }
+
       _productRepository.Remove(product);
     }
 

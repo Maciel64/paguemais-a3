@@ -5,7 +5,7 @@ GET {{PagueMais_HostAddress}}/api/v1/purchases
 Accept: application/json
 
 ### Selecionar Purchase pelo ID
-GET {{PagueMais_HostAddress}}/api/v1/purchases/2c01ef49-3742-4351-9457-a4baa3d276bb
+GET {{PagueMais_HostAddress}}/api/v1/purchases/PurchaseId
 Content-Type: application/json
 
 ###Adicionar Purchase
@@ -13,21 +13,21 @@ POST {{PagueMais_HostAddress}}/api/v1/purchases
 Content-Type: application/json
 
 {
-  "total": 10,
+  "total": 0,
   "clientId": "3ed58ecc-e3d1-48c9-8d8b-aef7f185c035",
   "paymentMethod": 1
 }
 
 ###Deletar Purchase
-DELETE {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+DELETE {{PagueMais_HostAddress}}/api/v1/purchases/PurchaseId
 Content-Type: application/json
 
 ###Editar Purchase
-PUT {{PagueMais_HostAddress}}/api/v1/purchases/11f1333f-ae00-407e-87c4-88c1552187b7
+PUT {{PagueMais_HostAddress}}/api/v1/purchases/PurchaseId
 Content-Type: application/json
 
 {
-  "total": 100,
+  "total": 2,
   "paymentMethod": 1,
   "status": 2
 }

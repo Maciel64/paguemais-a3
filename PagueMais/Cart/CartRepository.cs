@@ -1,14 +1,14 @@
 using Config;
 using Entities;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Repositories
 {
   public interface ICartRepository
   {
-    public void Create(Cart cart);
+    public Cart Create(Cart cart);
     public void Update(Cart cart);
+    public void Remove(Cart cart);
+    public void RemoveAll(IEnumerable<Cart> carts);
     public Cart? FindById(Guid Id);
     public Cart? FindByProductId(Guid ProductId);
     public Cart? FindByProductAndPurchaseId(Guid ProductId, Guid PurchaseId);
@@ -20,16 +20,30 @@ namespace Repositories
     public Database _context = new();
 
     //Criar Cart
-    public void Create(Cart cart)
+    public Cart Create(Cart cart)
     {
       _context.Carts.Add(cart);
       _context.SaveChanges();
+
+      return cart;
     }
 
     //Editar Cart
     public void Update(Cart cart)
     {
       _context.Carts.Update(cart);
+      _context.SaveChanges();
+    }
+
+    public void Remove(Cart cart)
+    {
+      _context.Carts.Remove(cart);
+      _context.SaveChanges();
+    }
+
+    public void RemoveAll(IEnumerable<Cart> carts)
+    {
+      _context.Carts.RemoveRange(carts);
       _context.SaveChanges();
     }
 
