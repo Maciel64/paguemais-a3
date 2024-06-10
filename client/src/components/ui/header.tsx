@@ -20,7 +20,7 @@ export const Header = () => {
             <NavigationMenuTrigger>Navegação</NavigationMenuTrigger>
             <NavigationMenuContent>
               <NavigationMenuLink
-                href="/purchases"
+                href="/"
                 className={navigationMenuTriggerStyle()}
               >
                 Compras
