@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "../ui/use-toast";
@@ -8,25 +8,26 @@ import { AxiosError } from "axios";
 import { useClient } from "@/app/clients/useClient";
 import { useClients } from "@/app/clients/useClients";
 import { CreatePurchaseSchema, UpdatePurchaseSchema } from "@/types/purchase";
+import { clientsService } from "@/services/clients-service";
 
-const createClientSchema = z.object({
-  name: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  cpf: z.string(),
-  birthDate: z.string(),
+const createPurchaseSchema = z.object({
+  clientId: z.string(),
+  paymentMethod: z.string(),
 });
 
-type typeCreateClientSchema = z.infer<typeof createClientSchema>;
+type typeCreatePurchaseSchema = z.infer<typeof createPurchaseSchema>;
 
 export const usePurchaseForm = () => {
   const {
     handleSubmit,
     register,
+    control,
     formState: { errors },
-  } = useForm<typeCreateClientSchema>({
-    resolver: zodResolver(createClientSchema),
+  } = useForm<typeCreatePurchaseSchema>({
+    resolver: zodResolver(createPurchaseSchema),
   });
+
+  console.log(errors);
 
   const { client, setClient } = useClient();
   const { closeDialog } = useClients();
@@ -84,6 +85,15 @@ export const usePurchaseForm = () => {
     },
   });
 
+  const {
+    data: clients = [],
+    error,
+    isLoading: isClientsLoading,
+  } = useQuery({
+    queryKey: ["clients"],
+    queryFn: clientsService.getAll,
+  });
+
   const isMutationLoading =
     createMutation.isPending ||
     updateMutation.isPending ||
@@ -98,10 +108,13 @@ export const usePurchaseForm = () => {
   return {
     handleSubmit,
     register,
+    control,
     errors,
     create,
     update,
     isMutationLoading,
     deleteMutation,
+    clients,
+    isClientsLoading,
   };
 };

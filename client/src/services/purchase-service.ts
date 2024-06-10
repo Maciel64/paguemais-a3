@@ -25,6 +25,7 @@ export const purchaseService = {
     data: CreatePurchaseSchema;
   }): Promise<Purchase> => {
     const req = await api.post("/purchases", data);
+    console.log(req);
     return req.data;
   },
 

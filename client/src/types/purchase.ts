@@ -26,13 +26,14 @@ export type Purchase = {
 };
 
 export interface CreatePurchaseSchema {
-  total: number;
   paymentMethod: PaymentMethods;
-  status: Status;
   clientId: string;
 }
 
-export interface UpdatePurchaseSchema extends Partial<CreatePurchaseSchema> {}
+export interface UpdatePurchaseSchema {
+  total: number;
+  status: Status;
+}
 
 export type Cart = {
   id: string;
