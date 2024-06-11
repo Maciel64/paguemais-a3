@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderIcon, Pencil, Trash } from "lucide-react";
+import { LoaderIcon, Pencil, ShoppingCart, Trash } from "lucide-react";
 
 import {
   Table,
@@ -19,15 +19,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import ProductForm from "@/components/forms/ProductForm";
-import { useProductForm } from "@/components/forms/useProductForm";
-import { useProducts } from "./products/useProducts";
 import { usePurchases } from "./usePurchases";
-import PurchaseForm from "@/components/forms/PurchaseForm";
+import CreatePurchaseForm from "@/components/forms/Purchase/CreateForm";
+import UpdatePurchaseForm from "@/components/forms/Purchase/UpdateForm";
 import ProductsList from "@/components/productsList";
 import { Product } from "@/types/product";
+import { Purchase } from "@/types/purchase";
 
-const Products = () => {
+const Purchases = () => {
   const {
     columns,
     table,
@@ -40,6 +39,8 @@ const Products = () => {
     product,
     setIsDeleting,
     setIsUpdating,
+    deleteMutation,
+    paymentMethodMapper,
   } = usePurchases();
 
   const products: Product[] = [
@@ -69,8 +70,6 @@ const Products = () => {
     },
   ];
 
-  const { deleteMutation } = useProductForm();
-
   const dateFormater = new Intl.DateTimeFormat("pt-BR", {
     year: "numeric",
     month: "long",
@@ -86,7 +85,7 @@ const Products = () => {
     hour: "numeric",
     minute: "numeric",
   });
-  const tableHaveLeght = table?.getRowModel().rows?.length;
+  const tableHaveLenght = table?.getRowModel().rows?.length;
 
   return isLoading ? (
     <LoaderIcon className="animate-spin" />
@@ -117,7 +116,7 @@ const Products = () => {
             </TableRow>
           )}
 
-          {tableHaveLeght ? (
+          {tableHaveLenght ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
@@ -136,6 +135,8 @@ const Products = () => {
                       >
                         <Trash />
                       </Button>
+                    ) : cell.column.id == "paymentMethod" ? (
+                      paymentMethodMapper[cell.getValue() as number]
                     ) : cell.column.id == "total" ? (
                       (cell.getValue() as number).toLocaleString("pt-br", {
                         style: "currency",
@@ -143,6 +144,13 @@ const Products = () => {
                       })
                     ) : cell.column.id == "createdAt" ? (
                       dateFormater.format(new Date(cell.getValue() as Date))
+                    ) : cell.column.id == "products" ? (
+                      <Button
+                        variant="outline"
+                        onClick={() => setDialogUIState("addingProducts")}
+                      >
+                        <ShoppingCart />
+                      </Button>
                     ) : (
                       (cell.getValue() as string)
                     )}
@@ -178,14 +186,18 @@ const Products = () => {
                 </>
               ) : dialogUIState === "creating" ? (
                 <>Crie uma nova compra</>
+              ) : dialogUIState === "addingProducts" ? (
+                <>Escolha os produtos</>
               ) : (
                 <>Tem certeza que quer apagar o compra {purchase?.id}?</>
               )}
             </DialogTitle>
 
             {dialogUIState === "creating" ? (
-              <PurchaseForm />
+              <CreatePurchaseForm />
             ) : dialogUIState === "updating" ? (
+              <UpdatePurchaseForm purchase={purchase as Purchase} />
+            ) : dialogUIState === "addingProducts" ? (
               <div className="grid grid-cols-3 gap-2">
                 <ProductsList products={products} />
               </div>
@@ -203,4 +215,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Purchases;

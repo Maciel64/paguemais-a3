@@ -1,5 +1,6 @@
 import { Client } from "./client";
 import { Product } from "./product";
+import { DialogUIStates } from "./ui";
 
 enum PaymentMethods {
   Credit,
@@ -31,7 +32,7 @@ export interface CreatePurchaseSchema {
 }
 
 export interface UpdatePurchaseSchema {
-  total: number;
+  paymentMethod: PaymentMethods;
   status: Status;
 }
 
@@ -49,6 +50,13 @@ export interface CreateCartSchema {
   purchaseId: string;
 }
 
+export type PurchaseDialogUIStates = DialogUIStates | "addingProducts";
+
+export interface UsePurchaseUIState {
+  dialogUIState: PurchaseDialogUIStates;
+  setDialogUIState: (UIState: PurchaseDialogUIStates) => void;
+}
+
 export interface UsePurchaseState {
   purchase: Purchase | null;
   product: Product | null;
@@ -59,4 +67,5 @@ export interface UsePurchaseState {
   closeDialog: () => void;
   setIsDeleting: (purchase: Purchase) => void;
   setIsUpdating: (purchase: Purchase) => void;
+  setIsAddingProducts: () => void;
 }

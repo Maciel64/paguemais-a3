@@ -1,5 +1,10 @@
+import { useUpdateForm } from "@/components/forms/Purchase/useUpdateForm";
 import { purchaseService } from "@/services/purchase-service";
-import { Purchase, UsePurchaseState } from "@/types/purchase";
+import {
+  Purchase,
+  UsePurchaseState,
+  UsePurchaseUIState,
+} from "@/types/purchase";
 import { UseUIState } from "@/types/ui";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -10,7 +15,7 @@ import {
 import { useMemo } from "react";
 import { create } from "zustand";
 
-export const useUI = create<UseUIState & UsePurchaseState>((set) => ({
+export const useUI = create<UsePurchaseUIState & UsePurchaseState>((set) => ({
   dialogUIState: "closed",
   setDialogUIState: (dialogUIState) => set({ dialogUIState }),
   purchase: null,
@@ -22,7 +27,10 @@ export const useUI = create<UseUIState & UsePurchaseState>((set) => ({
   closeDialog: () => set({ purchase: null, dialogUIState: "closed" }),
   setIsDeleting: (purchase) => set({ purchase, dialogUIState: "deleting" }),
   setIsUpdating: (purchase) => set({ purchase, dialogUIState: "updating" }),
+  setIsAddingProducts: () => set({ dialogUIState: "addingProducts" }),
 }));
+
+const paymentMethodMapper = ["Crédito", "Débito", "Pix", "Dinheiro"];
 
 export const usePurchases = () => {
   const {
@@ -34,7 +42,10 @@ export const usePurchases = () => {
     closeDialog,
     setIsDeleting,
     setIsUpdating,
+    setIsAddingProducts,
   } = useUI();
+
+  const { deleteMutation } = useUpdateForm();
 
   const columns: ColumnDef<Purchase>[] = useMemo(
     () => [
@@ -45,6 +56,10 @@ export const usePurchases = () => {
       {
         accessorKey: "clientId",
         header: "Id do client",
+      },
+      {
+        accessorKey: "paymentMethod",
+        header: "Pagamento",
       },
       {
         accessorKey: "total",
@@ -61,6 +76,10 @@ export const usePurchases = () => {
       {
         accessorKey: "update",
         header: "Atualizar",
+      },
+      {
+        accessorKey: "products",
+        header: "Produtos",
       },
     ],
     []
@@ -93,5 +112,7 @@ export const usePurchases = () => {
     setDialogUIState,
     setIsDeleting,
     setIsUpdating,
+    deleteMutation,
+    paymentMethodMapper,
   };
 };

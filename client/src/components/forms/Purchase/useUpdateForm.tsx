@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "../ui/use-toast";
+import { toast } from "../../ui/use-toast";
 import { purchaseService } from "@/services/purchase-service";
 import { AxiosError } from "axios";
 import { useClient } from "@/app/clients/useClient";
@@ -10,46 +10,26 @@ import { useClients } from "@/app/clients/useClients";
 import { CreatePurchaseSchema, UpdatePurchaseSchema } from "@/types/purchase";
 import { clientsService } from "@/services/clients-service";
 
-const createPurchaseSchema = z.object({
-  clientId: z.string(),
+const updatingPurchaseSchema = z.object({
+  status: z.string(),
   paymentMethod: z.string(),
 });
 
-type typeCreatePurchaseSchema = z.infer<typeof createPurchaseSchema>;
-
-export const usePurchaseForm = () => {
+export const useUpdateForm = () => {
   const {
     handleSubmit,
     register,
     control,
+    reset,
     formState: { errors },
-  } = useForm<typeCreatePurchaseSchema>({
-    resolver: zodResolver(createPurchaseSchema),
+  } = useForm<z.infer<typeof updatingPurchaseSchema>>({
+    resolver: zodResolver(updatingPurchaseSchema),
   });
-
-  console.log(errors);
 
   const { client, setClient } = useClient();
   const { closeDialog } = useClients();
 
   const queryClient = useQueryClient();
-
-  const createMutation = useMutation({
-    mutationFn: purchaseService.create,
-    onSuccess: () => {
-      toast({
-        title: "Sucesso!",
-      });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
-      closeDialog();
-    },
-    onError: (error: AxiosError) => {
-      toast({
-        title: "Não foi possível criar um novo usuário",
-        description: error.request.response,
-      });
-    },
-  });
 
   const updateMutation = useMutation({
     mutationFn: purchaseService.update,
@@ -57,7 +37,7 @@ export const usePurchaseForm = () => {
       toast({
         title: `Cliente ${client?.name} atualizado com sucesso!`,
       });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
@@ -74,7 +54,7 @@ export const usePurchaseForm = () => {
       toast({
         title: `Cliente ${client?.name} deletado com sucesso!`,
       });
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
@@ -95,12 +75,7 @@ export const usePurchaseForm = () => {
   });
 
   const isMutationLoading =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending;
-
-  const create: SubmitHandler<CreatePurchaseSchema> = (data) =>
-    createMutation.mutate({ data });
+    updateMutation.isPending || deleteMutation.isPending;
 
   const update = (id: string, data: UpdatePurchaseSchema) =>
     updateMutation.mutate({ id, data });
@@ -110,8 +85,8 @@ export const usePurchaseForm = () => {
     register,
     control,
     errors,
-    create,
     update,
+    reset,
     isMutationLoading,
     deleteMutation,
     clients,
