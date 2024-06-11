@@ -80,9 +80,9 @@ const UpdateForm = ({ purchase }: PurchaseFormProps) => {
               <SelectValue placeholder="Estatus" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="0">Pending</SelectItem>
-              <SelectItem value="1">Completed</SelectItem>
-              <SelectItem value="2">Canceled</SelectItem>
+              <SelectItem value="0">Em andamento</SelectItem>
+              <SelectItem value="1">Completo</SelectItem>
+              <SelectItem value="2">Cancelado</SelectItem>
             </SelectContent>
           </Select>
         )}

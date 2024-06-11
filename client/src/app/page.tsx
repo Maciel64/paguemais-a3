@@ -55,13 +55,7 @@ const Purchases = () => {
     minute: "2-digit",
     second: "2-digit",
   });
-  const shortDateFormater = new Intl.DateTimeFormat("pt-BR", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
+
   const tableHaveLenght = table?.getRowModel().rows?.length;
 
   return isLoading ? (
@@ -159,12 +153,7 @@ const Purchases = () => {
           <DialogHeader>
             <DialogTitle>
               {dialogUIState === "updating" ? (
-                <>
-                  {shortDateFormater.format(
-                    new Date(purchase?.createdAt as Date)
-                  )}
-                  : {clientId}
-                </>
+                <>Atualizando a compra: {purchase?.id}</>
               ) : dialogUIState === "creating" ? (
                 <>Crie uma nova compra</>
               ) : dialogUIState === "addingProducts" ? (

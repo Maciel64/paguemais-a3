@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import { Product } from "@/types/product";
 import { Button } from "../ui/button";
-import { Minus, Plus } from "lucide-react";
 import { Cart, Purchase } from "@/types/purchase";
 import { usePurchases } from "@/app/usePurchases";
 
@@ -31,6 +30,8 @@ const ProductsList = ({ products, carts, purchase }: ProductsListProps) => {
       cart,
     };
   });
+
+  console.log(mappedProducts);
 
   const {
     createCartMutation,

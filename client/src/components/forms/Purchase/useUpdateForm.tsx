@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "../../ui/use-toast";
 import { purchaseService } from "@/services/purchase-service";
 import { AxiosError } from "axios";
-import { useClient } from "@/app/clients/useClient";
 import { useClients } from "@/app/clients/useClients";
-import { CreatePurchaseSchema, UpdatePurchaseSchema } from "@/types/purchase";
+import { UpdatePurchaseSchema } from "@/types/purchase";
 import { clientsService } from "@/services/clients-service";
 
 const updatingPurchaseSchema = z.object({
@@ -53,8 +52,10 @@ export const useUpdateForm = () => {
       toast({
         title: `Compra deletada com sucesso!`,
       });
-      queryClient.invalidateQueries({ queryKey: ["purchases"] });
       closeDialog();
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      }, 300);
     },
     onError: (error: AxiosError) => {
       toast({

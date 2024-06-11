@@ -19,7 +19,7 @@ interface PurchaseFormProps extends PropsWithChildren {
 }
 
 const CreateForm = ({ purchase }: PurchaseFormProps) => {
-  const { handleSubmit, create, update, isMutationLoading, clients, control } =
+  const { handleSubmit, create, isMutationLoading, clients, control } =
     useCreateForm();
 
   return (

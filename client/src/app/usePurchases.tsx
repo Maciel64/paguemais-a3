@@ -110,7 +110,10 @@ export const usePurchases = () => {
   const createCartMutation = useMutation({
     mutationFn: purchaseService.createCart,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["carts"] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["carts"] });
+        queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      }, 300);
     },
     onError: (error: AxiosError) => {
       toast({
@@ -123,7 +126,10 @@ export const usePurchases = () => {
   const increaseQuantityMutation = useMutation({
     mutationFn: purchaseService.increaseQuantity,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["carts"] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["carts"] });
+        queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      }, 300);
     },
     onError: (error: AxiosError) => {
       toast({
@@ -136,7 +142,10 @@ export const usePurchases = () => {
   const decreaseQuantityMutation = useMutation({
     mutationFn: purchaseService.decreaseQuantity,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["carts"] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["carts"] });
+        queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      }, 300);
     },
     onError: (error: AxiosError) => {
       toast({
