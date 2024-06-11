@@ -44,15 +44,21 @@ export const purchaseService = {
     api.delete(`/purchases/${id}`);
   },
 
-  createCart: (data: CreateCartSchema) => {
+  getAllCarts: async () => {
+    const req = await api.get(`/carts`);
+
+    return req.data;
+  },
+
+  createCart: async (data: CreateCartSchema) => {
     api.post(`/carts`, data);
   },
 
-  increaseQuantity: (cartId: string) => {
+  increaseQuantity: async (cartId: string) => {
     api.get(`/carts/increment/${cartId}`);
   },
 
-  decreaseQuantity: (cartId: string) => {
+  decreaseQuantity: async (cartId: string) => {
     api.get(`/carts/decrement/${cartId}`);
   },
 };

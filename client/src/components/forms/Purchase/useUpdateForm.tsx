@@ -26,7 +26,6 @@ export const useUpdateForm = () => {
     resolver: zodResolver(updatingPurchaseSchema),
   });
 
-  const { client, setClient } = useClient();
   const { closeDialog } = useClients();
 
   const queryClient = useQueryClient();
@@ -35,14 +34,14 @@ export const useUpdateForm = () => {
     mutationFn: purchaseService.update,
     onSuccess: () => {
       toast({
-        title: `Cliente ${client?.name} atualizado com sucesso!`,
+        title: `Compra atualizada com sucesso!`,
       });
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
       toast({
-        title: `Não foi possível atualizar a compra ${client?.name}`,
+        title: `Não foi possível atualizar a compra`,
         description: error.request.response,
       });
     },
@@ -52,14 +51,14 @@ export const useUpdateForm = () => {
     mutationFn: purchaseService.delete,
     onSuccess: () => {
       toast({
-        title: `Cliente ${client?.name} deletado com sucesso!`,
+        title: `Compra deletada com sucesso!`,
       });
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
       closeDialog();
     },
     onError: (error: AxiosError) => {
       toast({
-        title: `Não foi possível apagar o cliente ${client?.name}`,
+        title: `Não foi possível apagar a compra`,
         description: error.request.response,
       });
     },

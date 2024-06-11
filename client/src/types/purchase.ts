@@ -20,6 +20,7 @@ export type Purchase = {
   total: number;
   paymentMethod: PaymentMethods;
   status: Status;
+  clientId: string;
   createdAt: Date;
   finishedAt: Date;
   updatedAt?: Date;
@@ -39,14 +40,16 @@ export interface UpdatePurchaseSchema {
 export type Cart = {
   id: string;
   quantity: number;
+  productId: string;
   product: Product;
+  purchaseId: string;
   purchase: Purchase;
   createdAt: Date;
   updatedAt?: Date;
 };
 
 export interface CreateCartSchema {
-  clientId: string;
+  productId: string;
   purchaseId: string;
 }
 
@@ -60,10 +63,10 @@ export interface UsePurchaseUIState {
 export interface UsePurchaseState {
   purchase: Purchase | null;
   product: Product | null;
-  client: Client | null;
+  clientId: string | null;
   setPurchase: (purchase: Purchase | null) => void;
   setProduct: (product: Product | null) => void;
-  setClient: (client: Client | null) => void;
+  setClientId: (client: string | null) => void;
   closeDialog: () => void;
   setIsDeleting: (purchase: Purchase) => void;
   setIsUpdating: (purchase: Purchase) => void;

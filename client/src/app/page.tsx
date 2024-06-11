@@ -35,40 +35,17 @@ const Purchases = () => {
     setDialogUIState,
     closeDialog,
     purchase,
-    client,
+    setPurchase,
+    clientId,
+    setClientId,
     product,
+    products,
+    carts,
     setIsDeleting,
     setIsUpdating,
     deleteMutation,
     paymentMethodMapper,
   } = usePurchases();
-
-  const products: Product[] = [
-    {
-      id: "oppoa",
-      name: "Teste",
-      price: 12,
-      createdAt: new Date(),
-    },
-    {
-      id: "oppoa",
-      name: "Teste",
-      price: 12,
-      createdAt: new Date(),
-    },
-    {
-      id: "oppoa",
-      name: "Teste",
-      price: 12,
-      createdAt: new Date(),
-    },
-    {
-      id: "oppoa",
-      name: "Teste",
-      price: 12,
-      createdAt: new Date(),
-    },
-  ];
 
   const dateFormater = new Intl.DateTimeFormat("pt-BR", {
     year: "numeric",
@@ -147,7 +124,11 @@ const Purchases = () => {
                     ) : cell.column.id == "products" ? (
                       <Button
                         variant="outline"
-                        onClick={() => setDialogUIState("addingProducts")}
+                        onClick={() => {
+                          setPurchase(cell.row.original);
+                          setClientId(cell.row.original.clientId);
+                          setDialogUIState("addingProducts");
+                        }}
                       >
                         <ShoppingCart />
                       </Button>
@@ -182,7 +163,7 @@ const Purchases = () => {
                   {shortDateFormater.format(
                     new Date(purchase?.createdAt as Date)
                   )}
-                  : {client?.id}
+                  : {clientId}
                 </>
               ) : dialogUIState === "creating" ? (
                 <>Crie uma nova compra</>
@@ -198,8 +179,13 @@ const Purchases = () => {
             ) : dialogUIState === "updating" ? (
               <UpdatePurchaseForm purchase={purchase as Purchase} />
             ) : dialogUIState === "addingProducts" ? (
-              <div className="grid grid-cols-3 gap-2">
-                <ProductsList products={products} />
+              <div className="grid grid-cols-2 gap-2">
+                <ProductsList
+                  products={products}
+                  carts={carts}
+                  purchase={purchase as Purchase}
+                  clientId={clientId as string}
+                />
               </div>
             ) : (
               <Button

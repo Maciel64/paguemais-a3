@@ -6,7 +6,7 @@ import {
   UsePurchaseUIState,
 } from "@/types/purchase";
 import { UseUIState } from "@/types/ui";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -14,16 +14,19 @@ import {
 } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { create } from "zustand";
+import { useProducts } from "./products/useProducts";
+import { toast } from "@/components/ui/use-toast";
+import { AxiosError } from "axios";
 
 export const useUI = create<UsePurchaseUIState & UsePurchaseState>((set) => ({
   dialogUIState: "closed",
   setDialogUIState: (dialogUIState) => set({ dialogUIState }),
   purchase: null,
   product: null,
-  client: null,
+  clientId: null,
   setPurchase: (purchase) => set({ purchase }),
   setProduct: (product) => set({ product }),
-  setClient: (client) => set({ client }),
+  setClientId: (clientId) => set({ clientId }),
   closeDialog: () => set({ purchase: null, dialogUIState: "closed" }),
   setIsDeleting: (purchase) => set({ purchase, dialogUIState: "deleting" }),
   setIsUpdating: (purchase) => set({ purchase, dialogUIState: "updating" }),
@@ -37,7 +40,9 @@ export const usePurchases = () => {
     dialogUIState,
     setDialogUIState,
     purchase,
-    client,
+    setPurchase,
+    clientId,
+    setClientId,
     product,
     closeDialog,
     setIsDeleting,
@@ -46,6 +51,7 @@ export const usePurchases = () => {
   } = useUI();
 
   const { deleteMutation } = useUpdateForm();
+  const { products } = useProducts();
 
   const columns: ColumnDef<Purchase>[] = useMemo(
     () => [
@@ -85,6 +91,8 @@ export const usePurchases = () => {
     []
   );
 
+  const queryClient = useQueryClient();
+
   const {
     data = [],
     error,
@@ -92,6 +100,50 @@ export const usePurchases = () => {
   } = useQuery({
     queryKey: ["purchases"],
     queryFn: purchaseService.getAll,
+  });
+
+  const { data: carts = [], isLoading: isCartsLoading } = useQuery({
+    queryKey: ["carts"],
+    queryFn: purchaseService.getAllCarts,
+  });
+
+  const createCartMutation = useMutation({
+    mutationFn: purchaseService.createCart,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["carts"] });
+    },
+    onError: (error: AxiosError) => {
+      toast({
+        title: "Não foi possível adicionar a quantidade",
+        description: error.request.response,
+      });
+    },
+  });
+
+  const increaseQuantityMutation = useMutation({
+    mutationFn: purchaseService.increaseQuantity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["carts"] });
+    },
+    onError: (error: AxiosError) => {
+      toast({
+        title: "Não foi possível adicionar a quantidade",
+        description: error.request.response,
+      });
+    },
+  });
+
+  const decreaseQuantityMutation = useMutation({
+    mutationFn: purchaseService.decreaseQuantity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["carts"] });
+    },
+    onError: (error: AxiosError) => {
+      toast({
+        title: "Não foi possível adicionar a quantidade",
+        description: error.request.response,
+      });
+    },
   });
 
   const table = useReactTable({
@@ -105,8 +157,12 @@ export const usePurchases = () => {
     table,
     isLoading,
     purchase,
-    client,
+    setPurchase,
+    clientId,
+    setClientId,
     product,
+    products,
+    carts,
     closeDialog,
     dialogUIState,
     setDialogUIState,
@@ -114,5 +170,8 @@ export const usePurchases = () => {
     setIsUpdating,
     deleteMutation,
     paymentMethodMapper,
+    createCartMutation,
+    increaseQuantityMutation,
+    decreaseQuantityMutation,
   };
 };
