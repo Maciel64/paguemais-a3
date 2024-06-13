@@ -1,4 +1,4 @@
-@PagueMais_HostAddress = http://localhost:5151
+@PagueMais_HostAddress = http://20.83.146.99:80
 
 ###Mostrar Todos os Clientes
 GET {{PagueMais_HostAddress}}/api/v1/clients
