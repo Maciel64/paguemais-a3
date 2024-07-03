@@ -97,7 +97,14 @@ const Products = () => {
                         <Trash />
                       </Button>
                     ) : cell.column.id == "createdAt" ? (
-                      dateFormater.format(new Date())
+                      dateFormater.format(
+                        new Date(cell.row.original.createdAt as Date)
+                      )
+                    ) : cell.column.id == "price" ? (
+                      cell.row.original.price.toLocaleString("pt-br", {
+                        style: "currency",
+                        currency: "BRL",
+                      })
                     ) : (
                       (cell.getValue() as string)
                     )}

@@ -80,6 +80,7 @@ export const useProducts = () => {
     table,
     isLoading,
     product,
+    products: data,
     closeDialog,
     dialogUIState,
     setDialogUIState,
